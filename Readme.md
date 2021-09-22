@@ -16,21 +16,21 @@ Dependiendo de los tiempos puede ser posible que se agreguen nuevas característ
 
 ## Índice
 * [Tecnologías a utilizar](#tecnologías-a-utilizar)
-    * Typescript
-    * Ts.ED
-    * Mongoose
-    * PassportJS
-    * SocketIO
-    * Testing (a definir)
-* Pruebas a realizar
-* Base de datos
-* Documenos
-    * Diagrama de clases
-    * Modelo de datos
-* Capas de la aplicación
-    * Lógica de negocio
-    * Capa de datos
-    * Capa de controladores
+    * [Typescript](#typescript) 
+    * [Ts.ED](#tsed)
+    * [Mongoose](#mongoose)
+    * [PassportJS](#passportjs)
+    * [SocketIO](#socketio)
+    * [Testing](#testing) (a definir)
+* [Pruebas a realizar](#pruebas-a-realizar)
+* [Base de datos](#base-de-datos)
+* [Documentos](#documentos)
+    * [Diagrama de clases](#diagrama-de-clases)
+    * [Modelo de datos](#modelo-de-datos)
+* [Capas de la aplicación](#capas-de-la-aplicación)
+    * [Lógica de negocio](#lógica-de-negocio)
+    * [Capa de datos](#capa-de-datos)
+    * [Capa de controladores](#capa-de-controladores)
         * Endpoints
         * Eventos
 * Despliegue
@@ -45,11 +45,11 @@ Dependiendo de los tiempos puede ser posible que se agreguen nuevas característ
 * ### Mongoose
     La elección de mongoose no tiene mucho misterio, como la base elegida es MongoDB se eligió este ODM para facilitar la interacción con la base.
 * ### PassportJS
-    Existen 3 razones por las cuales elegí esta librería en vez de usar otra librería para la autenticación o hacerla a mano. La primera es que Ts.ED tiene un plugin para PassportJS, la segunda es que PassportJS puede funcionar con jwt el cual es el estandar que pretendo usar para la autenticación en la aplicación y, la tercera y más importante, es que PassportJS es flexible y permite generar cierta abstracción en la aplicación con respecto a la tecnología de autenticación que se use, pues soporta una gran cantidad de estrategias.
+    Existen 3 razones por las cuales elegimos esta librería en vez de usar otra librería para la autenticación o hacerla a mano. La primera es que Ts.ED tiene un plugin para PassportJS, la segunda es que PassportJS puede funcionar con jwt el cual es el estandar que pretendemos usar para la autenticación en la aplicación y, la tercera y más importante, es que PassportJS es flexible y permite generar cierta abstracción en la aplicación con respecto a la tecnología de autenticación que se use, pues soporta una gran cantidad de estrategias.
 * ### SocketIO
     Esta librería se usará para la comunicación en tiempo real de las salas de chat. No fue una elección porque es obligatoria en el TP pero igual está buena porque permite usar web sockets de una forma bastante fácil.
 * ### Testing
-    Todavía no se ha definido una tecnología para el testing, estoy entre Jest y Mocha decantándome por Mocha.
+    Todavía no se ha definido una tecnología para el testing, estamos entre Jest y Mocha decantándonos por Mocha.
 
 ## Pruebas a realizar
 
@@ -62,12 +62,12 @@ Se intentará realizar pruebas unitarias de todo el sistema, sin embargo, se van
 
 ## Base de datos
 
-La base de datos elegida es MongoDB, la razón de elegir esta base de datos es porque lo que más convenía para este proyecto era una base de datos NoSQL por la cantidad de modificaciones que se pueden llegar a realizar en paralelo sobre los mismos datos, cosa que sería más lenta en una base de datos relacional. Elegí MongoDB en particular porque al ser la más famosa es una opción segura para empezar a trabajar con bases de dato no relacionales si no se tiene mucha experiencia con ellas.
+La base de datos elegida es MongoDB, la razón de elegir esta base de datos es porque lo que más convenía para este proyecto era una base de datos NoSQL por la cantidad de modificaciones que se pueden llegar a realizar en paralelo sobre los mismos datos, cosa que sería más lenta en una base de datos relacional. Elegimos MongoDB en particular porque al ser la más famosa es una opción segura para empezar a trabajar con bases de dato no relacionales si no se tiene mucha experiencia con ellas.
 
 ## Documentos
 
 * ### Diagrama de clases
-    Este es el diagrama de clases del proyecto. Cabe recalcar que lo que aparece en él es lo principal para el funcionamiento del proyecto. No están incluidas las clases del patrón Factory ni del patrón Proxy, por dos razones, la primera es porque no tengo claro cuales van a ser exactamente los métodos de cada una y la segunda para no sobrecargar aún más el diagrama, sin embargo explico lo que tengo estimado: una factory (en esta clase en particular aún no se si factory o builder) para los chats y otra para los usuarios y con respecto al patrón proxy tenía pensado usar un proxy de la clase chat para controlar que los cambios solo sean realizados por el dueño de dicho chat y otro para las clases que se encarguen de la persistencia de manera que pueda hacer una caché de chats. Sin embargo aclaro que voy a esperar hasta la implementación para ver si es rentable o no aplicar el proxy.
+    Este es el diagrama de clases del proyecto. Cabe recalcar que lo que aparece en él es lo principal para el funcionamiento del proyecto. No están incluidas las clases del patrón Factory ni del patrón Proxy, por dos razones, la primera es porque no tenemos claro cuales van a ser exactamente los métodos de cada una y la segunda para no sobrecargar aún más el diagrama, sin embargo explicamos lo que tenemos estimado: una factory (en esta clase en particular aún no sabemos si factory o builder) para los chats y otra para los usuarios y con respecto al patrón proxy teníamos pensado usar un proxy de la clase chat para controlar que los cambios solo sean realizados por el dueño de dicho chat y otro para las clases que se encarguen de la persistencia de manera que podamos hacer una caché de chats. Sin embargo aclaramos que vamos a esperar hasta la implementación para ver si es rentable o no aplicar el proxy.
     PENDIENTE PONER EL DIAGRAMA
 * ### Modelo de datos
     PENDIENTE
@@ -77,6 +77,6 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
 * ### Lógica de negocio
     Esta capa contiene el mécanismo de funcionamiento de las salas de chat y los usuarios, un usuario puede tener varias salas de chat favoritas (esto va a ser más que todo para enviar esas salas al cliente para que las muestre de primeras) pero solo puede estar en una sala al mismo tiempo escribiendo, por otra parte el usuario es capaz de crear salas de chat, la capacidad de crearlas o no y la cantidad las va a determinar la implementación de SuscriptionPlan que tenga el usuario de esta manera para que el usuario cambie de suscripción solo hay que remplazar dicho objeto, sería algo parecido a un patrón Strategy.
 * ### Capa de datos
-    Esta capa consiste en la implementación del patrón Data Access Object, de esta manera se logra abstraer a la aplicación de la interacción con la base, así se facilita el testing (porque puedo mockear el acceso a datos) y genera una gran flexibilidad pues puedo agregar nuevas clases para interactuar con diferentes bases de datos solo con implementar la interfaz.
+    Esta capa consiste en la implementación del patrón Data Access Object, de esta manera se logra abstraer a la aplicación de la interacción con la base, así se facilita el testing (porque podemos mockear el acceso a datos) y genera una gran flexibilidad pues podemos agregar nuevas clases para interactuar con diferentes bases de datos solo con implementar la interfaz.
 * ### Capa de controladores
-    Esta capa es la encargada de llevar la interacción del cliente, para explicarla me gusta dividirla en dos partes, los controladores en sí y los eventos, con los controladores no hay mucho misterio, ofrecen una serie de endpoints para responder a peticiones REST, para temas que no tienen por qué ser en tiempo real. Con respecto a los eventos, en está solución pensé en los eventos como cada una de las clases encargadas de gestionar un evento de SocketIO específico, el servicio (que está definido como servicio porque así lo dice el plugin de Ts.ED) está compuesto por un conjunto de clases que heredan de ChatEvent, siempre trabaja con abstracciones, de esta manera me es más fácil agregar los nuevos eventos porque solo tengo que crear una clase que herede de la ya mencionada y los eventos ya existentes están contenidos en una sola clase cosa que facilita su mantenimiento. Como el cliente puede enviar cualquier cosa como parámetro y cada evento espera un parámetro distinto, en los eventos está aplicado el patrón template method para dividir el funcionamiento en dos pasos, donde cada evento es responsable de definir la lógica de su funcionamiento (paso 2) y de realizar la validación del parámetro específico que espera (paso 1). Paso a listar los endpoints y los eventos: 
+    Esta capa es la encargada de llevar la interacción del cliente, para explicarla nos gusta dividirla en dos partes, los controladores en sí y los eventos. Con los controladores no hay mucho misterio, ofrecen una serie de endpoints para responder a peticiones REST, para temas que no tienen por qué ser en tiempo real. Con respecto a los eventos, en está solución pensamos en los eventos como cada una de las clases encargadas de gestionar un evento de SocketIO específico, el servicio (que está definido como servicio porque así lo dice el plugin de Ts.ED) está compuesto por un conjunto de clases que heredan de ChatEvent, siempre trabaja con abstracciones, de esta manera nos es más fácil agregar los nuevos eventos porque solo tenemos que crear una clase que herede de la ya mencionada y los eventos ya existentes están contenidos en una sola clase cosa que facilita su mantenimiento. Como el cliente puede enviar cualquier cosa como parámetro y cada evento espera un parámetro distinto, en los eventos está aplicado el patrón template method para dividir el funcionamiento en dos pasos, donde cada evento es responsable de definir la lógica de su funcionamiento (paso 2) y de realizar la validación del parámetro específico que espera (paso 1). Paso a listar los endpoints y los eventos: 

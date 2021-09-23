@@ -68,7 +68,7 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
 
 * ### Diagrama de clases
     Este es el diagrama de clases del proyecto. Cabe recalcar que lo que aparece en él es lo principal para el funcionamiento del proyecto. No están incluidas las clases del patrón Factory ni del patrón Proxy, por dos razones, la primera es porque no se tiene claro cuales van a ser exactamente los métodos de cada una y la segunda para no sobrecargar aún más el diagrama, sin embargo, la estimación es la siguiente: una factory (en esta clase en particular aún no se sabe si factory o builder) para los chats y otra para los usuarios, y con respecto al patrón proxy se tenía pensado usar un proxy de la clase chat para controlar que los cambios solo sean realizados por el dueño de dicho chat y otro para las clases que se encarguen de la persistencia de manera que se pueda crear una caché de chats. Sin embargo aclaramos que vamos a esperar hasta la implementación para ver si es rentable o no aplicar el proxy.
-    [Link](https://drive.google.com/file/d/1HdlYoQnU9tZwq94RgYyDw35ujs3UGWiW/view?usp=sharing) al diagrama.
+    [Link](https://drive.google.com/file/d/1FvPPtlrFYyur3rCvuAGnxgsweu9P6BCA/view?usp=sharing) al diagrama.
 
     **Importante:** todas las dependencias que aparecen en el diagrama de clases son inyectadas gracias al framework que se está usando.
 

@@ -1,0 +1,24 @@
+{
+  "name": "tp-tap",
+  "version": "0.1.0",
+  "description": "TP de técnicas avanzadas de programación. Aplicación de salas de chat.",
+  "main": "app.js",
+  "scripts": {
+    "dev": "tsc -p . && node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luisfc68/tp-tap.git"
+  },
+  "keywords": [
+    "socket.io",
+    "ts.ed",
+    "chat"
+  ],
+  "author": "Luis Chavez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luisfc68/tp-tap/issues"
+  },
+  "homepage": "https://github.com/Luisfc68/tp-tap#readme"
+}

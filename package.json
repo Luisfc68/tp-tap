@@ -2,9 +2,10 @@
   "name": "tp-tap",
   "version": "0.1.0",
   "description": "TP de técnicas avanzadas de programación. Aplicación de salas de chat.",
-  "main": "app.js",
+  "main": "./out/app.js",
   "scripts": {
-    "dev": "tsc -p . && node app.js"
+    "dev": "tsc -p . && node  ./out/app.js",
+    "clean": "rm -rf ./out/*"
   },
   "repository": {
     "type": "git",

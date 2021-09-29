@@ -33,15 +33,15 @@ Dependiendo de los tiempos puede ser posible que se agreguen nuevas característ
     * [Capa de controladores](#capa-de-controladores)
         * [Endpoints](#endpoints)
         * [Eventos](#eventos)
-* Despliegue
-* Cliente
+* [Despliegue](#despliegue)
+* [Cliente](#cliente)
 
 ## Tecnologías a utilizar
     
 * ### Typescript
     La razón para elegir este lenguaje es que la capa adicional que le da a javascript permite tener una mayor seguridad gracias al tipado y seguir una programación orientada a objetos más clásica, facilitando la aplicación de patrones de diseño.
 * ### Ts.ED
-    Este es un framework de Node.js que puede correr sobre Express o Koa. Permite la creación sencilla de aplicaciones de servidor a través de un funcionamiento con anotaciones parecido al de Spring Framework. La razón para elegir este framework es que ofrece una serie de pluggins para integrar diferentes librerías de manera más sencilla entre los cuales hay un plugin de Socket.IO la cual es la librería obligatoria en el desarrollo de este TP, además facilita la inyección de dependencias usando sus anotaciones. [Esta](https://tsed.io/) es su página.
+    Este es un framework de Node.js que puede correr sobre Express o Koa. Permite la creación sencilla de aplicaciones de servidor a través de un funcionamiento con anotaciones parecido al de Spring Framework. La razón para elegir este framework es que ofrece una serie de pluggins para integrar diferentes librerías de manera más sencilla entre los cuales hay un plugin de Socket.IO, la cual es la librería obligatoria en el desarrollo de este TP, Mongoose y PassportJS, además facilita la inyección de dependencias usando sus anotaciones. [Esta](https://tsed.io/) es su página.
 * ### Mongoose
     La elección de mongoose no tiene mucho misterio, como la base elegida es MongoDB se eligió este ODM para facilitar la interacción con la base y generar una capa de abstracción adicional.
 * ### PassportJS
@@ -68,7 +68,7 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
 
 * ### Diagrama de clases
     Este es el diagrama de clases del proyecto. Cabe recalcar que lo que aparece en él es lo principal para el funcionamiento del proyecto. No están incluidas las clases del patrón Factory ni del patrón Proxy, por dos razones, la primera es porque no se tiene claro cuales van a ser exactamente los métodos de cada una y la segunda para no sobrecargar aún más el diagrama, sin embargo, la estimación es la siguiente: una factory (en esta clase en particular aún no se sabe si factory o builder) para los chats y otra para los usuarios, y con respecto al patrón proxy se tenía pensado usar un proxy de la clase chat para controlar que los cambios solo sean realizados por el dueño de dicho chat y otro para las clases que se encarguen de la persistencia de manera que se pueda crear una caché de chats. Sin embargo aclaramos que vamos a esperar hasta la implementación para ver si es rentable o no aplicar el proxy.
-    [Link](https://drive.google.com/file/d/1HdlYoQnU9tZwq94RgYyDw35ujs3UGWiW/view?usp=sharing) al diagrama.
+    [Link](https://drive.google.com/file/d/1FvPPtlrFYyur3rCvuAGnxgsweu9P6BCA/view?usp=sharing) al diagrama.
 
     **Importante:** todas las dependencias que aparecen en el diagrama de clases son inyectadas gracias al framework que se está usando.
 
@@ -80,17 +80,21 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
 ## Capas de la aplicación
 
 * ### Lógica de negocio
-    Esta capa contiene el mécanismo de funcionamiento de las salas de chat y los usuarios, un usuario puede tener varias salas de chat favoritas (esto va a ser más que todo para enviar esas salas al cliente para que las muestre de primeras) pero solo puede estar en una sala al mismo tiempo escribiendo, por otra parte el usuario es capaz de crear salas de chat, la capacidad de crearlas o no y la cantidad las va a determinar la implementación de SuscriptionPlan que tenga el usuario de esta manera para que el usuario cambie de suscripción solo hay que remplazar dicho objeto.
+    Esta capa contiene las clases que van a ser persistidas y que contienen el mécanismo de funcionamiento de las salas de chat y los usuarios, un usuario puede tener varias salas de chat favoritas (esto va a ser más que todo para enviar esas salas al cliente para que las muestre de primeras) pero solo puede estar en una sala al mismo tiempo escribiendo, por otra parte el usuario es capaz de crear salas de chat, la capacidad de crearlas o no y la cantidad las va a determinar la implementación de SuscriptionPlan que tenga el usuario de esta manera para que el usuario cambie de suscripción solo hay que remplazar dicho objeto.
 * ### Capa de datos
     Esta capa consiste en la implementación del patrón Data Access Object, de esta manera se logra abstraer a la aplicación de la interacción con la base, así se facilita el testing (porque podemos mockear el acceso a datos) y genera una gran flexibilidad pues podemos agregar nuevas clases para interactuar con diferentes bases de datos solo con implementar la interfaz.
 * ### Capa de controladores
+<<<<<<< HEAD
     Esta capa es la encargada de llevar la interacción del cliente, para explicarla es más fácil dividirla en dos partes, los controladores en sí y los eventos. Con los controladores no hay mucho misterio, ofrecen una serie de endpoints para responder a peticiones REST, para temas que no tienen por qué ser en tiempo real. Con respecto a los eventos, en está solución se pensó en los eventos como cada una de las clases encargadas de gestionar un evento de SocketIO específico, el SocketService (que está definido como servicio porque hay que usar una anotación de servicio de Ts.ED integrar el plugin de SocketIO) está compuesto por un conjunto de clases que heredan de ChatEvent, este siempre trabaja con abstracciones, de esta manera es más fácil agregar nuevos eventos porque solo tenemos que crear una clase que herede de la ya mencionada y los eventos ya existentes están contenidos cada uno en su propia clase, cosa que facilita su mantenimiento. Como el cliente puede enviar cualquier cosa como parámetro y cada evento espera un parámetro distinto, en los eventos está aplicado el patrón template method para dividir el funcionamiento en dos pasos, donde cada evento es responsable de definir la lógica de su funcionamiento (paso 2) y de realizar la validación del parámetro específico que espera (paso 1). 
+=======
+    Esta capa es la encargada de llevar la interacción con el cliente, para explicarla es más fácil dividirla en dos partes, los controladores en sí y los eventos. Con los controladores no hay mucho misterio, ofrecen una serie de endpoints para responder a peticiones REST, para temas que no tienen por qué ser en tiempo real. Con respecto a los eventos, en está solución se pensó en los eventos como cada una de las clases encargadas de gestionar un evento de SocketIO específico, el servicio (que está definido como servicio porque así lo dice el plugin de Ts.ED) está compuesto por un conjunto de clases que heredan de ChatEvent, siempre trabaja con abstracciones, de esta manera nos es más fácil agregar los nuevos eventos porque solo tenemos que crear una clase que herede de la ya mencionada y los eventos ya existentes están contenidos en una sola clase cosa que facilita su mantenimiento. Como el cliente puede enviar cualquier cosa como parámetro y cada evento espera un parámetro distinto, en los eventos está aplicado el patrón template method para dividir el funcionamiento en dos pasos, donde cada evento es responsable de definir la lógica de su funcionamiento (paso 2) y de realizar la validación del parámetro específico que espera (paso 1). 
+>>>>>>> 88f06e54e76940613f8dc559481dfd10d9570214
     
     Con respecto a los servicios, como se mencionó anteriormente, el SocketService es el encargado de gestionar la comunicación con los socket, para conectarse al socket el usuario debe tener un token de jwt que se verifica al momento del handshake. El SocketService espera que se le inyecte un set de eventos con los que va a trabajar, esto quiere decir que podría asumir diferentes funcionamientos dependiendo de las combinaciones de eventos de los set que se le inyecte, por ejemplo, se podría hacer que se le inyecte un set en particular en producción y otro en desarrollo. 
 
     **Nota:** a los controladores se les inyecta el socket service porque así son capaces de notificar a los socket de eventos que no ocurren en tiempo real, como por ejemplo, un cambio de imagen de usuario.
 
-    Por otro lado está el servicio de las imágenes, este trabaja a través de una abstracción para poder usar diferentes formas de guardar imagenes (inicialmente será local y aws).
+    Por otro lado está el servicio de las imágenes, este trabaja a través de una abstracción para poder usar diferentes formas de guardar imagenes (inicialmente será local y aws, en aws se va a buscar guardar las imágenes en un S3).
 
     - ## Endpoints  
         
@@ -107,6 +111,8 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
         | /chat/{id}/image | POST | Guarda una foto de perfil del chat |
 
         **Aclaración:** todos los endpoints están asegurados y necesitan un token para ser accedidos excepto login y signup, estos son públicos.
+        
+        **Otra aclaración:** en los endpoint de usuario no se pide id porque se puede determinar con el token.
     
     - ## Eventos
         
@@ -123,3 +129,11 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
         | ChatChanged | Avisa al cliente del cambio de un chat |- |
         
     **Nota:** con el socket se puede determinar el usuario, no hace falta mandarlo como parámetro 
+
+## Despliegue
+    
+Este proyecto va a ser deployado usando dos contendedores de Docker, uno para la aplicación usando una imagen propia hecha a partir de la imagen de node y otro para la base de datos usando la imagen de MongoDB, la idea es deployar esos contenedores usando docker-compose en un EC2 de AWS.
+
+## Cliente
+
+El cliente de este proyecto va a ser móvil y seguramente esté hecho con Quasar.

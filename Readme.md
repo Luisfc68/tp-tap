@@ -41,7 +41,7 @@ Dependiendo de los tiempos puede ser posible que se agreguen nuevas característ
 * ### Typescript
     La razón para elegir este lenguaje es que la capa adicional que le da a javascript permite tener una mayor seguridad gracias al tipado y seguir una programación orientada a objetos más clásica, facilitando la aplicación de patrones de diseño.
 * ### Ts.ED
-    Este es un framework de Node.js que puede correr sobre Express o Koa. Permite la creación sencilla de aplicaciones de servidor a través de un funcionamiento con anotaciones parecido al de Spring Framework. La razón para elegir este framework es que ofrece una serie de pluggins para integrar diferentes librerías de manera más sencilla entre los cuales hay un plugin de Socket.IO, la cual es la librería obligatoria en el desarrollo de este TP, Mongoose y PassportJS, además facilita la inyección de dependencias usando sus anotaciones. [Esta](https://tsed.io/) es su página.
+    Este es un framework de Node.js que puede correr sobre Express o Koa. Permite la creación sencilla de aplicaciones de servidor a través de un funcionamiento con anotaciones parecido al de Spring Framework. La razón para elegir este framework es que ofrece una serie de pluggins para integrar diferentes librerías de manera más sencilla entre los cuales hay un plugin de Socket.IO, la cual es la librería obligatoria en el desarrollo de este TP, Mongoose y PassportJS, además facilita la inyección de dependencias usando sus anotaciones. [Esta es su página](https://tsed.io/).
 * ### Mongoose
     La elección de mongoose no tiene mucho misterio, como la base elegida es MongoDB se eligió este ODM para facilitar la interacción con la base y generar una capa de abstracción adicional.
 * ### PassportJS
@@ -68,7 +68,7 @@ La base de datos elegida es MongoDB, la razón de elegir esta base de datos es p
 
 * ### Diagrama de clases
     Este es el diagrama de clases del proyecto. Cabe recalcar que lo que aparece en él es lo principal para el funcionamiento del proyecto. No están incluidas las clases del patrón Factory ni del patrón Proxy, por dos razones, la primera es porque no se tiene claro cuales van a ser exactamente los métodos de cada una y la segunda para no sobrecargar aún más el diagrama, sin embargo, la estimación es la siguiente: una factory (en esta clase en particular aún no se sabe si factory o builder) para los chats y otra para los usuarios, y con respecto al patrón proxy se tenía pensado usar un proxy de la clase chat para controlar que los cambios solo sean realizados por el dueño de dicho chat y otro para las clases que se encarguen de la persistencia de manera que se pueda crear una caché de chats. Sin embargo aclaramos que vamos a esperar hasta la implementación para ver si es rentable o no aplicar el proxy.
-    [Link](https://drive.google.com/file/d/1FvPPtlrFYyur3rCvuAGnxgsweu9P6BCA/view?usp=sharing) al diagrama.
+    [Link al diagrama](https://drive.google.com/file/d/1FvPPtlrFYyur3rCvuAGnxgsweu9P6BCA/view?usp=sharing).
 
     **Importante:** todas las dependencias que aparecen en el diagrama de clases son inyectadas gracias al framework que se está usando.
 

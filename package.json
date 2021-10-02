@@ -4,7 +4,8 @@
   "description": "TP de técnicas avanzadas de programación. Aplicación de salas de chat.",
   "main": "./out/app.js",
   "scripts": {
-    "dev": "tsc -p . && node  ./out/app.js",
+    "dev": "tsc -p . && node -r dotenv/config ./out/app.js",
+    "prod": "tsc -p . && node ./out/app.js",
     "clean": "rm -rf ./out/*"
   },
   "repository": {
@@ -37,5 +38,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.13.9",
     "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }

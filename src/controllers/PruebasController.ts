@@ -34,8 +34,10 @@ export class PruebasController {
 
     
     let u1 = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","luisfc68","123","prueba@correo");
+    let u2 = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","2","123","prueba2@correo");
     
     u1 = await this.servicio.guardar(u1);
+    u2 = await this.servicio.guardar(u2);
 
     let c = fc.createChat("mi chat","none","algo",u1,["1","a","<"]);
     c = await this.servicio.guardarChat(c);

@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import {  Groups, Name, Property, Required } from "@tsed/schema";
+import {  ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
 import Message from "./Message";
 import User from "./User";
 
@@ -36,6 +36,7 @@ export default class Chat {
     @Ref(() => User)
     @Name("owner")                  // La politica por defecto es que si no tiene grupo pertenece a todos los grupos
     @Groups("!userRepresentation") // por eso es más fácil poner que a este no pertenece
+    @ForwardGroups()
     private _owner: Ref<User>;
 
     private _users: Set<User>;

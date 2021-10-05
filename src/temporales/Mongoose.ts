@@ -22,10 +22,7 @@ export default class MyService{
     }
 
     guardar(u:User):Promise<User>{
-
-        let m = new this.modelo(u);
         return this.modelo.create(u);
-
     }
 
     guardarChat(u:Chat):Promise<Chat>{

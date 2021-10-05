@@ -1,22 +1,55 @@
+import { Model, ObjectID, Ref, Unique } from "@tsed/mongoose";
+import { ArrayOf, ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
 import { SubscriptionPlan } from "../bl.interfaces";
 import Chat from "./Chat";
 import Message from "./Message";
 
+@Model({
+    collection: "users"
+})
 export default class User{
 
+    @Property()
+    @Required()
+    @Name("imgUrl")
     private _imgUrl: string;
+
+    @Property()
+    @Required()
+    @Unique()
+    @Name("username")
     private _username: string;
+
+    @Property()
+    @Required()
+    @Groups("!chatRepresentation")
+    @Name("password")
     private _password: string;
+
+    @Property()
+    @Required()
+    @Unique()
+    @Groups("!chatRepresentation")
+    @Name("email")
     private _email: string;
+    
+    @Ref(() => Chat) //La arrow function en ref indica referencia circular
+    @Name("favChats")
+    @ArrayOf(Chat).UniqueItems(true)
+    @Groups("!chatRepresentation")
+    @ForwardGroups()
+    private _favChats: Ref<Chat>[];
+
+    @ObjectID("id")
     private _id?: string;
 
     private _actualChat: Chat|null;
-    private _favChats: Set<Chat>;
+    
 
     private _plan: SubscriptionPlan;
     
     constructor(_imgUrl:string, _username:string, _password:string,_email: string,
-        _plan:SubscriptionPlan,_favChats?:Set<Chat>,_id?:string){
+        _plan:SubscriptionPlan,_favChats?:Ref<Chat>[],_id?:string){
         
             this._imgUrl = _imgUrl;
             this._username = _username;
@@ -25,7 +58,7 @@ export default class User{
             this._plan = _plan;
             this._id = _id;
             this._actualChat = null;
-            this._favChats = _favChats || new Set<Chat>();
+            this._favChats = _favChats || [];
 
     }
 
@@ -85,11 +118,11 @@ export default class User{
         this._actualChat = value;
     }
 
-    get favChats(): Set<Chat>{
+    get favChats(): Ref<Chat>[]{
         return this._favChats;
     }
     
-    set favChats(value: Set<Chat>) {
+    set favChats(value: Ref<Chat>[]) {
         this._favChats = value;
     }
 

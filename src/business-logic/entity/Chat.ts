@@ -1,16 +1,42 @@
+import { Model, ObjectID, Ref } from "@tsed/mongoose";
+import {  Groups, Name, Property, Required } from "@tsed/schema";
 import Message from "./Message";
 import User from "./User";
 
+@Model({
+    collection: "chats"
+})
 export default class Chat {
 
+    @Property()
+    @Required()
+    @Name("title")
     private _title: string;
+    
+    @Property()
+    @Required()
+    @Name("imgUrl")
     private _imgUrl: string;
+
+    @Property()
+    @Required()
+    @Name("description")
     private _description: string;
+
+    @Property()
+    @Required()
+    @Name("tags")
     private _tags: string[];
-    private _id?: string | undefined;
+    
+    @ObjectID("id")
+    private _id?: string;
 
     private _messages: Message[];
-    private _owner: User;
+
+    @Ref(() => User)
+    @Name("owner")                  // La politica por defecto es que si no tiene grupo pertenece a todos los grupos
+    @Groups("!userRepresentation") // por eso es más fácil poner que a este no pertenece
+    private _owner: Ref<User>;
 
     private _users: Set<User>;
     
@@ -52,11 +78,11 @@ export default class Chat {
         this._description = value;
     }
 
-    get owner(): User {
+    get owner(): Ref<User> {
         return this._owner;
     }
 
-    set owner(value: User) {
+    set owner(value: Ref<User>) {
         this._owner = value;
     }
 

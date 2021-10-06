@@ -1,24 +1,69 @@
+import { Inject, Service } from "@tsed/di";
+import { MongooseModel } from "@tsed/mongoose";
+import { UpdateQuery, UpdateWithAggregationPipeline } from "mongoose";
 import Chat from "../../business-logic/entity/Chat";
 import Message from "../../business-logic/entity/Message";
-import { ChatDao } from "../da.interfaces";
+import { ChatDao, PAGE_LIMIT } from "../da.interfaces";
 
+@Service()
 export default class MongoChatDao implements ChatDao{
 
-    insert(_o: Chat): Promise<Chat> {
-        throw new Error("Method not implemented.");
+    private readonly generalOps = {
+        useFindAndModify: false
+    };
+
+    constructor(
+        @Inject(Chat) private model:MongooseModel<Chat>
+    ){}
+
+    insert(o: Chat): Promise<Chat> {
+        return  this.model.create(o)
+                .catch(err => {
+                    console.error(err);
+                    throw new Error("Error inserting document");
+                });
     }
-    update(_o: Chat): Promise<Chat> {
-        throw new Error("Method not implemented.");
+
+    update(o: Chat): Promise<Chat|null> {
+
+        const update = {
+            _title: o.title,
+            _imgUrl: o.imgUrl,
+            _description: o.description,
+            _tags: o.tags
+        };
+
+        const ops = {
+            new: true,
+            ...this.generalOps
+        };
+       
+        return  this.model.findByIdAndUpdate(o.id,[{ $set: update }],ops)
+                .catch(err => {
+                    console.error(err);
+                    throw new Error("Error updating document");
+                });
     }
-    delete(_id: string): Promise<Chat> {
-        throw new Error("Method not implemented.");
+
+    delete(id: string): Promise<Chat|null> {
+        return  this.model.findByIdAndDelete(id,this.generalOps)
+                .catch( err =>{
+                    console.error(err);
+                    throw new Error("Error deleting document");
+                });
     }
-    get(_id: string): Promise<Chat> {
-        throw new Error("Method not implemented.");
+    
+    get(id: string): Promise<Chat|null> {
+        throw this.model.findById(id).exec();
     }
-    getAll(_offset: number): Promise<Chat[]> {
-        throw new Error("Method not implemented.");
+
+    getAll(offset:number = 0): Promise<Chat[]> {
+        return this.model.find()
+                         .skip(offset)
+                         .limit(PAGE_LIMIT)
+                         .exec();
     }
+
     updateMessages(_m: Message): Promise<boolean> {
         throw new Error("Method not implemented.");
     }

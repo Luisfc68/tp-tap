@@ -29,7 +29,7 @@ export default class Chat {
     private _tags: string[];
     
     @ObjectID("id")
-    private _id?: string;
+    readonly _id?: string;
 
     private _messages: Message[];
 
@@ -97,10 +97,6 @@ export default class Chat {
 
     get id(): string | undefined {
         return this._id;
-    }
-    
-    set id(value: string | undefined) {
-        this._id = value;
     }
 
     get messages(): Message[] {

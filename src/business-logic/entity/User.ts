@@ -35,13 +35,13 @@ export default class User{
     
     @Ref(() => Chat) //La arrow function en ref indica referencia circular
     @Name("favChats")
-    @ArrayOf(Chat).UniqueItems(true)
+    @ArrayOf(() => Chat).UniqueItems(true)
     @Groups("!chatRepresentation")
     @ForwardGroups()
     private _favChats: Ref<Chat>[];
 
     @ObjectID("id")
-    private _id?: string;
+    readonly _id?: string;
 
     private _actualChat: Chat|null;
     
@@ -104,10 +104,6 @@ export default class User{
 
     get id(): string|undefined {
         return this._id;
-    }
-
-    set id(value: string|undefined) {
-        this._id = value;
     }
 
     get actualChat(): Chat|null {

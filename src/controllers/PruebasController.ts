@@ -1,10 +1,12 @@
-import { Controller, Get } from "@tsed/common";
+import { Controller, Get, Inject } from "@tsed/common";
+import { deserialize } from "@tsed/json-mapper";
 import {  Post, Returns } from "../../node_modules/@tsed/schema/lib";
-import Chat from "../business-logic/entity/Chat";
 import User from "../business-logic/entity/User";
 import ChatFactory from "../business-logic/factory/ChatFactory";
 import UserFactory from "../business-logic/factory/UserFactory";
-import MyService from "../temporales/Mongoose";
+import { ChatDao, UserDao } from "../data-access/da.interfaces";
+import MongoChatDao from "../data-access/mongo/MongoChatDao";
+import MongoUserDao from "../data-access/mongo/MongoUserDao";
 
 /*
   * CAMBIAR NOMBRE DE CARPETA A CONTROLLER EN SINGULAR
@@ -13,10 +15,12 @@ import MyService from "../temporales/Mongoose";
 @Controller("/prueba")
 export class PruebasController {
   
-  private servicio;
+  private userDao:UserDao;
+  private chatDao:ChatDao
   
-  constructor(servicio:MyService){
-    this.servicio = servicio;
+  constructor(@Inject(MongoUserDao) userDao:UserDao, @Inject(MongoChatDao) chatDao:ChatDao){
+    this.userDao = userDao;
+    this.chatDao = chatDao;
   }
   
   
@@ -26,39 +30,36 @@ export class PruebasController {
   }
   
   @Get("/mongoose")
-  @(Returns(200,User).Groups("userRepresentation").Description("no sirve"))
-  async db(): Promise<User> {
+  @Returns(200,User).Groups("userRepresentation")
+  async db(): Promise<User|null> {
 
     let fu: UserFactory = new UserFactory();
     let fc: ChatFactory = new ChatFactory();
 
     
-    let u1 = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","luisfc68","123","prueba@correo");
-    let u2 = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","2","123","prueba2@correo");
+    let u1: User|null = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","luisfc68","123","prueba@correo");
     
-    u1 = await this.servicio.guardar(u1);
-    u2 = await this.servicio.guardar(u2);
+    u1 = await this.userDao.insert(u1);
 
     let c = fc.createChat("mi chat","none","algo",u1,["1","a","<"]);
-    c = await this.servicio.guardarChat(c);
 
+    c = await this.chatDao.insert(c);
 
     u1.favChats.push(c);
 
-    //console.log(u1)
-      
-    //await this.servicio.updateUser(u1)
-    
+    u1 = await this.userDao.update(u1);
+
+
     return u1;
   }
 
-  @Get("/mongoose/leer")
+  /*@Get("/mongoose/leer")
   async leer(){
     return this.servicio.leer("luisfc68");
-  }
+  }*/
 
   @Post("/test")
-  @Returns(206,Chat).Groups("chatRepresentation")
+  @Returns(200,User).Groups("userRepresentation")
   getSimpleRepresentation() {
 
     let uf: UserFactory = new UserFactory();
@@ -68,8 +69,16 @@ export class PruebasController {
     let chat = cf.createChat("title","chatImg","some description",user,["tag1","tag2"]);
     user.favChats.push(chat)
 
-    return chat;
+    console.log(deserialize(user,{groups: ['userRepresentation']}))
+    console.log(deserialize(chat,{groups: ['chatRepresentation']}))
+
+    return user;
     
+  }
+
+  @Get("/serv")
+  prueba(){
+    this.chatDao.insert(null as any);
   }
 
 }

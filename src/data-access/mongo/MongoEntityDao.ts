@@ -1,13 +1,18 @@
 import { MongooseModel } from "@tsed/mongoose";
-import { QueryOptions } from "mongoose";
+import { EnforceDocument, QueryOptions } from "mongoose";
 import { Dao, PAGE_LIMIT } from "../da.interfaces";
 
 export default abstract class MongoEntityDao<T> implements Dao<T>{
 
+    private readonly _populatedFields:string[];
+
     constructor(
         private readonly _model:MongooseModel<T>,
-        private readonly _generalOps:QueryOptions
-    ){}
+        private readonly _generalOps:QueryOptions,
+        ...populatedFields:string[]
+    ){
+        this._populatedFields = populatedFields;
+    }
 
     get model(){
         return this._model;
@@ -17,18 +22,35 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
         return this._generalOps;
     }
 
-    insert(o: T): Promise<T> {
-        return  this._model.create(o)
+    get populatedFields(){
+        return this._populatedFields;
+    }
+
+    protected populate(obj:EnforceDocument<T,any>):void{
+        this._populatedFields.forEach(field => obj.populate(field));
+    }
+
+    insert(obj: T): Promise<T> {
+        return  this._model.create(obj)
+                .then(obj => {
+                    this.populate(obj);
+                    return obj.toClass();
+                })
                 .catch(err => {
                     console.error(err);
                     throw new Error("Error inserting document");
                 });
     }
 
-    abstract update(o: T): Promise<T | null>;
+    abstract update(obj: T): Promise<T | null>;
 
     delete(id: string): Promise<T|null> {
         return  this._model.findByIdAndDelete(id,this._generalOps)
+                .then(obj => {
+                    if(obj)
+                        this.populate(obj);
+                    return obj?.toClass() || null;
+                })
                 .catch( err =>{
                     console.error(err);
                     throw new Error("Error deleting document");
@@ -36,14 +58,24 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
     }
 
     get(id: string): Promise<T|null> {
-        throw this._model.findById(id).exec();
+        return this._model.findById(id)
+               .exec()
+               .then(obj => {
+                    if(obj)
+                        this.populate(obj);
+                    return obj?.toClass() || null;
+               });
     }
 
     getAll(offset:number = 0): Promise<T[]> {
         return this._model.find()
-                         .skip(offset)
-                         .limit(PAGE_LIMIT)
-                         .exec();
+               .skip(offset)
+               .limit(PAGE_LIMIT)
+               .exec()
+               .then(arr => {
+                    arr.forEach(obj => this.populate(obj));
+                    return arr.map(obj => obj.toClass());
+                });
     }
     
 }

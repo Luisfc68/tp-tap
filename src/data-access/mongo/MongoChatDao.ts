@@ -8,6 +8,7 @@ import MongoEntityDao from "./MongoEntityDao";
 @Service()
 export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDao{
 
+
     constructor(
         @Inject(Chat) model:MongooseModel<Chat>
     ){
@@ -16,21 +17,25 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
         });
     }
 
-    update(o: Chat): Promise<Chat|null> {
+    update(obj: Chat): Promise<Chat|null> {
 
         const update = {
-            _title: o.title,
-            _imgUrl: o.imgUrl,
-            _description: o.description,
-            _tags: o.tags
+            _title: obj.title,
+            _imgUrl: obj.imgUrl,
+            _description: obj.description,
+            _tags: obj.tags
         };
 
         const ops = {
             new: true,
             ...super.generalOps
         };
-       
-        return  super.model.findByIdAndUpdate(o.id,[{ $set: update }],ops)
+        return  super.model.findByIdAndUpdate(obj.id,[{ $set: update }],ops)
+                .then(obj => {
+                    if(obj)
+                        super.populate(obj);
+                    return obj?.toClass() || null;
+                })
                 .catch(err => {
                     console.error(err);
                     throw new Error("Error updating document");

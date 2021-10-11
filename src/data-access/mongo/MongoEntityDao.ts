@@ -1,18 +1,14 @@
 import { MongooseModel } from "@tsed/mongoose";
-import { EnforceDocument, QueryOptions } from "mongoose";
+import { QueryOptions } from "mongoose";
 import { Dao, PAGE_LIMIT } from "../da.interfaces";
 
 export default abstract class MongoEntityDao<T> implements Dao<T>{
 
-    private readonly _populatedFields:string[];
-
     constructor(
         private readonly _model:MongooseModel<T>,
         private readonly _generalOps:QueryOptions,
-        ...populatedFields:string[]
-    ){
-        this._populatedFields = populatedFields;
-    }
+        private readonly _populatedFields:string[]
+    ){}
 
     get model(){
         return this._model;
@@ -26,16 +22,13 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
         return this._populatedFields;
     }
 
-    protected populate(obj:EnforceDocument<T,any>):void{
-        this._populatedFields.forEach(field => obj.populate(field));
-    }
-
-    insert(obj: T): Promise<T> {
-        return  this._model.create(obj)
+    insert(param: T): Promise<T> {
+        return  this._model.create(param)
                 .then(obj => {
-                    this.populate(obj);
-                    return obj.toClass();
+                    return this._model.populate(obj,
+                        { path: this.populatedFields.join(" ") });
                 })
+                .then(obj => obj.toClass())
                 .catch(err => {
                     console.error(err);
                     throw new Error("Error inserting document");
@@ -46,11 +39,8 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     delete(id: string): Promise<T|null> {
         return  this._model.findByIdAndDelete(id,this._generalOps)
-                .then(obj => {
-                    if(obj)
-                        this.populate(obj);
-                    return obj?.toClass() || null;
-                })
+                .populate(this.populatedFields.join(" "))
+                .then(obj => obj?.toClass() || null)
                 .catch( err =>{
                     console.error(err);
                     throw new Error("Error deleting document");
@@ -59,10 +49,9 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     get(id: string): Promise<T|null> {
         return this._model.findById(id)
+               .populate(this.populatedFields.join(" "))
                .exec()
                .then(obj => {
-                    if(obj)
-                        this.populate(obj);
                     return obj?.toClass() || null;
                });
     }
@@ -71,11 +60,9 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
         return this._model.find()
                .skip(offset)
                .limit(PAGE_LIMIT)
+               .populate(this.populatedFields.join(" "))
                .exec()
-               .then(arr => {
-                    arr.forEach(obj => this.populate(obj));
-                    return arr.map(obj => obj.toClass());
-                });
+               .then(arr => arr.map(obj => obj.toClass()));
     }
     
 }

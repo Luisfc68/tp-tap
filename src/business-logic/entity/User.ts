@@ -45,7 +45,9 @@ export default class User{
 
     private _actualChat: Chat|null;
     
-
+    @Property()
+    @Groups("!chatRepresentation")
+    @Name("planDetails")
     private _plan: SubscriptionPlan;
     
     constructor(_imgUrl:string, _username:string, _password:string,_email: string,

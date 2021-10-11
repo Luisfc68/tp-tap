@@ -12,9 +12,10 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
     constructor(
         @Inject(Chat) model:MongooseModel<Chat>
     ){
-        super(model,{
+        super(model,
+        {
             useFindAndModify: false
-        });
+        },["_owner"]);
     }
 
     update(obj: Chat): Promise<Chat|null> {
@@ -31,11 +32,8 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
             ...super.generalOps
         };
         return  super.model.findByIdAndUpdate(obj.id,[{ $set: update }],ops)
-                .then(obj => {
-                    if(obj)
-                        super.populate(obj);
-                    return obj?.toClass() || null;
-                })
+                .populate(super.populatedFields.join(" "))
+                .then(obj => obj?.toClass() || null)
                 .catch(err => {
                     console.error(err);
                     throw new Error("Error updating document");

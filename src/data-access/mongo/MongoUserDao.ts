@@ -1,10 +1,11 @@
-import { Inject } from "@tsed/di";
+import { Inject, Service } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
 import User from "../../business-logic/entity/User";
 import { UserDao } from "../da.interfaces";
 import MongoEntityDao from "./MongoEntityDao";
 import * as Mongoose from "mongoose";
 
+@Service()
 export default class MongoUserDao extends MongoEntityDao<User> implements UserDao{
 
     constructor(

@@ -1,3 +1,4 @@
+import { Injectable } from "@tsed/di";
 import { SubscriptionPlan } from "../bl.interfaces";
 import Chat from "../entity/Chat";
 import MidPlan from "../entity/MidPlan";
@@ -5,6 +6,7 @@ import PremiumPlan from "../entity/PremiumPlan";
 import RegularPlan from "../entity/RegularPlan";
 import User from "../entity/User";
 
+@Injectable()
 export default class UserFactory{
 
     private createUser(imgUrl:string, username:string, password:string,email: string,

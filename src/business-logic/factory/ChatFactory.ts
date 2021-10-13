@@ -1,7 +1,9 @@
+import { Injectable } from "@tsed/di";
 import Chat from "../entity/Chat";
 import Message from "../entity/Message";
 import User from "../entity/User";
 
+@Injectable()
 export default class ChatFactory{
 
     createChat(title: string,imgUrl: string,description: string,owner:User,

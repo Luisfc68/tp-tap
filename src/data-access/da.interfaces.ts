@@ -4,6 +4,8 @@ import User from "../business-logic/entity/User";
 
 export const PAGE_LIMIT:number = 5;
 
+export const MESSAGE_LIMIT:number = 3; //PARA PROBAR ES 3, CAMBIAR A 10 LUEGO
+
 export interface Dao<T>{
 
     insert(o:T):Promise<T>;
@@ -18,6 +20,8 @@ export interface UserDao extends Dao<User> {}
 
 export interface ChatDao extends Dao<Chat>{
     
-    updateMessages(m:Message):Promise<boolean>;
+    insertMessage(chat:Chat,message:Message):Promise<Message|null>;
+    cleanMessages(chat:Chat,user:User):Promise<boolean>;
+    getMessages(chat:Chat,offset:number):Promise<Message[]>;
 
 }

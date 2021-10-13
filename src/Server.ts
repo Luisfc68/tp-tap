@@ -1,16 +1,15 @@
 import {Configuration, Inject, PlatformApplication} from "@tsed/common";
+import mongooseConfig from "./configurations/mongoose.config";
+import cors from "cors";
 
 const rootDir = __dirname;
 
 @Configuration({
   rootDir,
   acceptMimes: ["application/json"],
-  mongoose: [
-    {
-        id: process.env.DB_ID!,
-        url: process.env.DB_URL!
-    }
-  ]
+  httpPort: process.env.PORT || 8080,
+  mongoose: mongooseConfig
+  
 })
 export class Server {
 
@@ -20,11 +19,8 @@ export class Server {
   @Configuration()
   settings!: Configuration;
 
-  /**
-   * This method let you configure the express middleware required by your application to works.
-   * @returns {Server}
-   */
-  /*public $beforeRoutesInit(): void | Promise<any> {
-  }*/
+  public $beforeRoutesInit(): void | Promise<any> {
+    this.app.use(cors());
+  }
 
 }

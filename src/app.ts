@@ -3,14 +3,13 @@ import {PlatformExpress} from "@tsed/platform-express";
 import {Server} from "./Server";
 
 try {
-    $log.debug("Start server...");
-    PlatformExpress.bootstrap(Server, {
-        // extra settings
-    }).then( (platform) => {
-        platform.listen()
-        $log.debug("Server initialized");
+    $log.debug("STARTING APP...");
+    PlatformExpress.bootstrap(Server,{})
+    .then( (platform) => {
+        $log.debug("APP INITIALIZED");
+        platform.listen();
     });
 
-} catch (er) {
-    $log.error(er);
+} catch (err) {
+    $log.error(err);
 }

@@ -1,7 +1,9 @@
 import { Controller, Get, Inject, QueryParams } from "@tsed/common";
 import { Returns } from "../../node_modules/@tsed/schema/lib";
+import Chat from "../business-logic/entity/Chat";
 import PremiumPlan from "../business-logic/entity/PremiumPlan";
 import User from "../business-logic/entity/User";
+import ChatFactory from "../business-logic/factory/ChatFactory";
 import UserFactory from "../business-logic/factory/UserFactory";
 import { ChatDao, UserDao } from "../data-access/da.interfaces";
 import MongoChatDao from "../data-access/mongo/MongoChatDao";
@@ -15,11 +17,11 @@ import MongoUserDao from "../data-access/mongo/MongoUserDao";
 export class PruebasController {
   
   private userDao:UserDao;
-  //private chatDao:ChatDao
+  private chatDao:ChatDao;
   
-  constructor(@Inject(MongoUserDao) userDao:UserDao, @Inject(MongoChatDao) _chatDao:ChatDao){
+  constructor(@Inject(MongoUserDao) userDao:UserDao, @Inject(MongoChatDao) chatDao:ChatDao){
     this.userDao = userDao;
-    //this.chatDao = chatDao;
+    this.chatDao = chatDao;
   }
   
   
@@ -154,5 +156,34 @@ export class PruebasController {
     return u;
 
   }
+
+  @Get("/chat")
+  @Returns(200,Chat).Groups("chatRepresentation")
+  chat():Promise<Chat>{
+
+    let cf: ChatFactory = new ChatFactory();
+    let uf: UserFactory = new UserFactory();
+
+    let u = uf.createRegularUser("test","test","test","test");
+    
+    return this.userDao.insert(u)
+    .then(user => {
+      let c = cf.createChat("mi-chat","test","test",user,["prueba","1","a"]);
+      return this.chatDao.insert(c);
+    });
+
+  }
+
+  @Get("/read-chat")
+  @Returns(200,Chat).Groups("chatRepresentation")
+  readChat(@QueryParams("id") id: string):Promise<Chat|null>{
+    return this.chatDao.get(id)
+    .then(chat =>{
+      if(!chat) return null;
+      console.log(chat.messages);
+      return chat;
+    })
+  }
+
 
 }

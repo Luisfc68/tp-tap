@@ -7,7 +7,8 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
     constructor(
         private readonly _model:MongooseModel<T>,
         private readonly _generalOps:QueryOptions,
-        private readonly _populatedFields:string[]
+        private readonly _populatedFields:string[],
+        private readonly _selection:string = ""
     ){}
 
     get model(){
@@ -20,6 +21,10 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     get populatedFields(){
         return this._populatedFields;
+    }
+
+    get selection(){
+        return this._selection;
     }
 
     insert(param: T): Promise<T> {
@@ -39,6 +44,7 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     delete(id: string): Promise<T|null> {
         return  this._model.findByIdAndDelete(id,this._generalOps)
+                .select(this._selection)
                 .populate(this.populatedFields.join(" "))
                 .then(obj => obj?.toClass() || null)
                 .catch( err =>{
@@ -49,6 +55,7 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     get(id: string): Promise<T|null> {
         return this._model.findById(id)
+               .select(this._selection)
                .populate(this.populatedFields.join(" "))
                .exec()
                .then(obj => {
@@ -58,6 +65,7 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
 
     getAll(offset:number = 0): Promise<T[]> {
         return this._model.find()
+               .select(this._selection)
                .skip(offset)
                .limit(PAGE_LIMIT)
                .populate(this.populatedFields.join(" "))

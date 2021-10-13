@@ -15,7 +15,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
         super(model,
         {
             useFindAndModify: false
-        },["_owner"]);
+        },["_owner"],"-_messages");
     }
 
     update(obj: Chat): Promise<Chat|null> {
@@ -32,6 +32,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
             ...super.generalOps
         };
         return  super.model.findByIdAndUpdate(obj.id,[{ $set: update }],ops)
+                .select(super.selection)
                 .populate(super.populatedFields.join(" "))
                 .then(obj => obj?.toClass() || null)
                 .catch(err => {

@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import {  ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
+import {  ArrayOf, ForwardGroups, Groups, Ignore, Name, Property, Required } from "@tsed/schema";
 import Message from "./Message";
 import User from "./User";
 
@@ -31,6 +31,9 @@ export default class Chat {
     @ObjectID("id")
     readonly _id?: string;
 
+    @Ignore()
+    @Property()
+    @ArrayOf(Message)
     private _messages: Message[];
 
     @Ref(() => User)

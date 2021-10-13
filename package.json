@@ -4,6 +4,7 @@
   "description": "TP de técnicas avanzadas de programación. Aplicación de salas de chat.",
   "main": "./out/app.js",
   "scripts": {
+    "devd": "tsc -p . && docker run -it -p 8080:8080 --rm --name my-running-script -v /home/luis/up/tap/tp-tap:/usr/src/app -w /usr/src/app node node -r dotenv/config ./out/app.js",
     "dev": "tsc -p . && node -r dotenv/config ./out/app.js",
     "prod": "tsc -p . && node ./out/app.js",
     "clean": "rm -rf ./out/*"
@@ -37,6 +38,7 @@
     "@types/express": "^4.17.13",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.10.1",
+    "@types/passport-jwt": "^3.0.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongoose": "^5.13.9",

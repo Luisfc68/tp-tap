@@ -1,7 +1,8 @@
 import { Model, ObjectID, Ref, Unique } from "@tsed/mongoose";
-import { ArrayOf, ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
+import { ArrayOf, ForwardGroups, Groups, Ignore, Name, Property, Required } from "@tsed/schema";
 import { SubscriptionPlan } from "../bl.interfaces";
 import Chat from "./Chat";
+import { AppGroups } from "../GroupsEnum";
 import Message from "./Message";
 
 @Model({
@@ -22,21 +23,21 @@ export default class User{
 
     @Property()
     @Required()
-    @Groups("!chatRepresentation")
+    @Ignore()
     @Name("password")
     private _password: string;
 
     @Property()
     @Required()
     @Unique()
-    @Groups("!chatRepresentation")
+    @Groups(AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("email")
     private _email: string;
     
     @Ref(() => Chat) //La arrow function en ref indica referencia circular
     @Name("favChats")
     @ArrayOf(() => Chat).UniqueItems(true)
-    @Groups("!chatRepresentation")
+    @Groups(AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @ForwardGroups()
     private _favChats: Ref<Chat>[];
 
@@ -46,7 +47,7 @@ export default class User{
     private _actualChat: Chat|null;
     
     @Property()
-    @Groups("!chatRepresentation")
+    @Groups(AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("planDetails")
     private _plan: SubscriptionPlan;
     
@@ -124,7 +125,7 @@ export default class User{
         this._favChats = value;
     }
 
-    private write(content:string):Message{
+    write(content:string):Message{
         return new Message(content,this);
     }
 

@@ -1,5 +1,5 @@
-import { Ref, Schema } from "@tsed/mongoose";
-import { Name, Property, Required } from "@tsed/schema";
+import { ObjectID, Ref, Schema } from "@tsed/mongoose";
+import { ForwardGroups, Name, Property, Required } from "@tsed/schema";
 import User from "./User";
 
 @Schema()
@@ -16,13 +16,19 @@ export default class Message{
     private _content:string;
 
     @Ref(User)
+    @ForwardGroups()
+    @Required()
     @Name("user")
     private _user:Ref<User>;
 
-    constructor(_content:string,_user:User,_timestamp?:number) {
-        this._user = this.user;
-        this._content = _content;
-        this._timestamp = _timestamp || Date.now();
+    @ObjectID("id")
+    readonly _id?:string;
+
+    constructor(content:string,user:Ref<User>,timestamp?:number,id?:string) {
+        this._user = user;
+        this._content = content;
+        this._timestamp = timestamp || Date.now();
+        this._id = id;
     }
 
     get content(){
@@ -35,6 +41,10 @@ export default class Message{
 
     get user(){
         return this._user;
+    }
+
+    get id(){
+        return this._id;
     }
 
 }

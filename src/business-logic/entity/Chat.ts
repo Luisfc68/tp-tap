@@ -1,5 +1,6 @@
-import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import {  ArrayOf, ForwardGroups, Groups, Ignore, Name, Property, Required } from "@tsed/schema";
+import { Model, ObjectID, Ref, Unique } from "@tsed/mongoose";
+import { ArrayOf, ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
+import { AppGroups } from "../GroupsEnum";
 import Message from "./Message";
 import User from "./User";
 
@@ -8,6 +9,7 @@ import User from "./User";
 })
 export default class Chat {
 
+    @Unique()
     @Property()
     @Required()
     @Name("title")
@@ -31,14 +33,16 @@ export default class Chat {
     @ObjectID("id")
     readonly _id?: string;
 
-    @Ignore()
     @Property()
     @ArrayOf(Message)
+    @ForwardGroups()
+    @Groups(AppGroups.MSG)
+    @Name("messages")
     private _messages: Message[];
 
     @Ref(() => User)
     @Name("owner")                  // La politica por defecto es que si no tiene grupo pertenece a todos los grupos
-    @Groups("!userRepresentation") // por eso es más fácil poner que a este no pertenece
+    @Groups(AppGroups.NOT_USER)    // por eso es más fácil poner que a este no pertenece
     @ForwardGroups()
     private _owner: Ref<User>;
 

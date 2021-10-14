@@ -129,4 +129,22 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
             Object.setPrototypeOf(u.plan,model.resolve().prototype);
     }
 
+    getByUsername(username:string):Promise<User|null>{
+        return  super.model.findOne({ _username: username})
+                .select(super.selection)
+                .populate(super.populatedFields)
+                .exec()
+                .then(doc => {
+                    if(!doc)
+                        return null;
+                    const user = doc.toClass();
+                    this.loadPlanImplementation(user);
+                    return user;
+                })
+                .catch(err => {
+                    console.log(err);
+                    throw new DaoError("Error determinating susbcription plan");
+                });
+    }
+
 }

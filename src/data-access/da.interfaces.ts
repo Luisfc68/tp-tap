@@ -16,7 +16,11 @@ export interface Dao<T>{
 
 }
 
-export interface UserDao extends Dao<User> {}
+export interface UserDao extends Dao<User> {
+
+    getByUsername(username:string):Promise<User|null>;
+
+}
 
 export interface ChatDao extends Dao<Chat>{
     

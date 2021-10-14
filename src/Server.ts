@@ -1,6 +1,7 @@
 import {Configuration, Inject, PlatformApplication} from "@tsed/common";
 import mongooseConfig from "./configurations/mongoose.config";
 import controllersConfig from "./configurations/controllers.config";
+import "./filters/CustomErrorFilter"
 import cors from "cors";
 import * as express from "express";
 

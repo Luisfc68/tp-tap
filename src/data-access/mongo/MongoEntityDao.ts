@@ -1,5 +1,7 @@
 import { MongooseModel } from "@tsed/mongoose";
 import { QueryOptions } from "mongoose";
+import DaoError from "../../errors/DaoError";
+import { ErrorModifiers } from "../../errors/errorEnum";
 import { Dao, PAGE_LIMIT } from "../da.interfaces";
 
 export default abstract class MongoEntityDao<T> implements Dao<T>{
@@ -35,8 +37,10 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
                 })
                 .then(obj => obj.toClass())
                 .catch(err => {
+                    if(err.code === 11000)
+                        throw new DaoError("Duplicated value for key or index",ErrorModifiers.DUP_KEY);
                     console.error(err);
-                    throw new Error("Error inserting document");
+                    throw new DaoError("Error inserting document");
                 });
     }
 
@@ -49,7 +53,7 @@ export default abstract class MongoEntityDao<T> implements Dao<T>{
                 .then(obj => obj?.toClass() || null)
                 .catch( err =>{
                     console.error(err);
-                    throw new Error("Error deleting document");
+                    throw new DaoError("Error deleting document");
                 });
     }
 

@@ -4,6 +4,7 @@ import User from "../../business-logic/entity/User";
 import { UserDao } from "../da.interfaces";
 import MongoEntityDao from "./MongoEntityDao";
 import * as Mongoose from "mongoose";
+import DaoError from "../../errors/DaoError";
 
 @Service()
 export default class MongoUserDao extends MongoEntityDao<User> implements UserDao{
@@ -40,8 +41,10 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
                     return this.savePlanImplementation(param);
                 })
                 .catch(err => {
+                    if(err.isCustomError)
+                        throw err;
                     console.error(err);
-                    throw new Error("Error updating document");
+                    throw new DaoError("Error updating document");
                 });
     }
 
@@ -51,8 +54,10 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
             return this.savePlanImplementation(u);
         })
         .catch(err => {
+            if(err.isCustomError)
+                throw err;
             console.log(err);
-            throw new Error("Error inserting document");
+            throw new DaoError("Error inserting document");
         });
     }
 
@@ -64,8 +69,10 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
             return u;
         })
         .catch( err => {
+            if(err.isCustomError)
+                throw err;
             console.log(err);
-            throw new Error("Error determinating susbcription plan");
+            throw new DaoError("Error determinating susbcription plan");
         });
     }
 
@@ -76,8 +83,10 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
                    return res;
                })
                .catch(err => {
+                    if(err.isCustomError)
+                        throw err;
                     console.log(err);
-                    throw new Error("Error determinating susbcription plan");
+                    throw new DaoError("Error determinating susbcription plan");
                 });
     }
 
@@ -89,8 +98,10 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
             return u;
         })
         .catch( err => {
+            if(err.isCustomError)
+                throw err;
             console.log(err);
-            throw new Error("Error determinating susbcription plan");
+            throw new DaoError("Error determinating susbcription plan");
         });
     }
 
@@ -103,7 +114,7 @@ export default class MongoUserDao extends MongoEntityDao<User> implements UserDa
             super.generalOps)
         .then(doc => {
             if(!doc)
-                throw new Error("Error saving subscription plan");
+                throw new DaoError("Error saving subscription plan");
             return u;
         });
     }

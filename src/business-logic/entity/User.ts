@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref, Unique } from "@tsed/mongoose";
-import { ArrayOf, ForwardGroups, Groups, Ignore, Name, Property, Required } from "@tsed/schema";
+import { ArrayOf, ForwardGroups, Groups, Name, Property, Required } from "@tsed/schema";
 import { SubscriptionPlan } from "../bl.interfaces";
 import Chat from "./Chat";
 import { AppGroups } from "../GroupsEnum";
@@ -23,7 +23,7 @@ export default class User{
 
     @Property()
     @Required()
-    @Ignore()
+    @Groups(AppGroups.NOT_USER,AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("password")
     private _password: string;
 

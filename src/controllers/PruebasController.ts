@@ -1,6 +1,8 @@
-import { Controller, Get, Inject, QueryParams } from "@tsed/common";
-import { Returns } from "../../node_modules/@tsed/schema/lib";
+import { BodyParams, Controller, Get, HeaderParams, Inject, QueryParams, Req } from "@tsed/common";
+import { Post, Required, Returns } from "../../node_modules/@tsed/schema/lib";
 import Chat from "../business-logic/entity/Chat";
+import { AppGroups } from "../business-logic/GroupsEnum";
+import Message from "../business-logic/entity/Message";
 import PremiumPlan from "../business-logic/entity/PremiumPlan";
 import User from "../business-logic/entity/User";
 import ChatFactory from "../business-logic/factory/ChatFactory";
@@ -8,6 +10,7 @@ import UserFactory from "../business-logic/factory/UserFactory";
 import { ChatDao, UserDao } from "../data-access/da.interfaces";
 import MongoChatDao from "../data-access/mongo/MongoChatDao";
 import MongoUserDao from "../data-access/mongo/MongoUserDao";
+import { Authenticate, Authorize } from "@tsed/passport";
 
 /*
   * CAMBIAR NOMBRE DE CARPETA A CONTROLLER EN SINGULAR
@@ -30,20 +33,26 @@ export class PruebasController {
     return "OK!";
   }
   
-  @Get("/mongoose")
-  @Returns(200,User).Groups("userRepresentation")
+  @Get("/same")
+  @Returns(200,User).Groups(AppGroups.USER)
   async db(): Promise<User|null> {
 
     let fu: UserFactory = new UserFactory();
-    //let fc: ChatFactory = new ChatFactory();
+    let fc: ChatFactory = new ChatFactory();
     
     let u1: User = fu.createRegularUser("https://i.imgur.com/zPFuLVO.jpeg","luisfc68","123","prueba@correo");
     return this.userDao.insert(u1).then(u => {
 
       console.log(u.favChats)
-
-      return u;
-    });
+      let c = fc.createChat("s","s","s",u,["a"]);
+      u1 = u;
+      return this.chatDao.insert(c);
+    })
+    .then(chat => {
+      u1.favChats.push(chat);
+      return this.userDao.update(u1);
+    })
+    .then(res => res);
   }
 
   @Get("/plans")
@@ -96,6 +105,7 @@ export class PruebasController {
   }
 
   @Get("/read")
+  @Returns(200,User).Groups(AppGroups.USER)
   async read(@QueryParams("id") id: string):Promise<User|null>{
     
     let u:User|null = await this.userDao.get(id);
@@ -166,11 +176,23 @@ export class PruebasController {
 
     let u = uf.createRegularUser("test","test","test","test");
     
+    let usuario:User;
+    let chatCreado:Chat;
+
     return this.userDao.insert(u)
     .then(user => {
+      usuario = user;
       let c = cf.createChat("mi-chat","test","test",user,["prueba","1","a"]);
       return this.chatDao.insert(c);
-    });
+    })
+    .then(chat => {
+      chatCreado = chat;
+      usuario.actualChat = chat;
+
+      return this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 1"));
+    })
+    .then(() => this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 2"))
+    .then(() => chatCreado));
 
   }
 
@@ -183,6 +205,69 @@ export class PruebasController {
       console.log(chat.messages);
       return chat;
     })
+  }
+
+  @Get("/chat-clean")
+  @Returns(200,Message).Groups(AppGroups.MSG)
+  chatClean():Promise<Message[]>{
+
+    let cf: ChatFactory = new ChatFactory();
+    let uf: UserFactory = new UserFactory();
+
+    let u = uf.createRegularUser("test","test","test","test");
+    
+    let usuario:User;
+    let chatCreado:Chat;
+
+    return this.userDao.insert(u)
+    .then(user => {
+      usuario = user;
+      let c = cf.createChat("mi-chat","test","test",user,["prueba","1","a"]);
+      return this.chatDao.insert(c);
+    })
+    .then(chat => {
+      chatCreado = chat;
+      usuario.actualChat = chat;
+
+      return this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 1"));
+    })
+    .then(() => this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 2")))
+    .then(() => this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 3")))
+    .then(() => this.chatDao.insertMessage(chatCreado,usuario.write("mensaje 4")))
+    .then(() => this.chatDao.getMessages(chatCreado,1))
+    .then(res => {
+      console.log(res)
+      return res
+    });
+    
+  }
+
+  @Get("/byname")
+  @Returns(200,User).Groups(AppGroups.USER)
+  userByName(@BodyParams("username") username:string):Promise<User|null>{
+    return this.userDao.getByUsername(username);
+  }
+
+  @Post("/login")
+  @Authenticate("login")
+  @Returns(201,String)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  login(@Req() req: Req, @Required() @BodyParams("username") _email: string, @Required() @BodyParams("password") _password: string) {
+    //FUNCIONA COMO FACHADA DEL PROTOCOLO
+    console.log(req.user)
+    return req.user;
+  }
+
+  @Get("/usertoken")
+  @Authorize("jwt")
+  @Returns(200,User).Groups(AppGroups.USER)
+  getWithToken(@Req() req: Req, @HeaderParams("authorization") _token: string){
+    console.log(req.user)
+    const id:string = <string>req.user;
+    console.log(id);
+    return this.userDao.get(id).then(r => {
+      return r;
+    });
   }
 
 

@@ -2,6 +2,7 @@ import {Catch, PlatformContext, ExceptionFilterMethods, ResponseErrorObject} fro
 import {Exception} from "@tsed/exceptions";
 
 @Catch(Exception)
+@Catch(Error)
 export class CustomErrorFilter implements ExceptionFilterMethods {
 
   private readonly kwownErrors:Map<string,string> = new Map([

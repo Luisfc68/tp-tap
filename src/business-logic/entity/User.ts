@@ -53,7 +53,7 @@ export default class User{
     constructor(_username:string, _password:string,_email: string,
         _plan:SubscriptionPlan,_imgUrl?:string,_favChats?:Ref<Chat>[],_id?:string){
         
-            this._imgUrl = _imgUrl || process.env.DEFAULT_IMG || "";
+            this._imgUrl = _imgUrl || process.env.DEFAULT_IMG_USER || "";
             this._username = _username;
             this._password = _password;
             this._email = _email;

@@ -16,7 +16,6 @@ export default class Chat {
     private _title: string;
     
     @Property()
-    @Required()
     @Name("imgUrl")
     private _imgUrl: string;
 
@@ -48,11 +47,11 @@ export default class Chat {
 
     private _users: Set<User>;
     
-    constructor(_title: string,_imgUrl: string,_description: string,_owner:User,
-        _tags?: string[],_messages?:Message[],_id?: string) {
+    constructor(_title: string,_description: string,_owner:User,
+        _tags?: string[],_imgUrl?: string,_messages?:Message[],_id?: string) {
         
             this._title = _title;
-            this._imgUrl = _imgUrl;
+            this._imgUrl = _imgUrl || process.env.DEFAULT_IMG_CHAT || "";
             this._description = _description;
             this._owner = _owner;
             this._tags = _tags || [];

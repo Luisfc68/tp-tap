@@ -1,4 +1,6 @@
 import { Injectable } from "@tsed/di";
+import { ErrorModifiers } from "../../errors/errorEnum";
+import LogicError from "../../errors/LogicError";
 import Chat from "../entity/Chat";
 import Message from "../entity/Message";
 import User from "../entity/User";
@@ -17,7 +19,7 @@ export default class ChatFactory{
         tags?: string[],imgUrl?: string,messages?:Message[],id?: string):Chat{
         
         if(!owner.plan.canCreateChat())
-            throw new Error("You can't create chats with your actual plan.");
+            throw new LogicError("You can't create chats with your actual plan.",ErrorModifiers.MAX_CHAT);
         
         owner.plan.registerChatCreation();
         return this.createChat(title,description,owner,tags,imgUrl,messages,id);

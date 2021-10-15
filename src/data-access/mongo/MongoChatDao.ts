@@ -6,6 +6,7 @@ import User from "../../business-logic/entity/User";
 import { ChatDao, MESSAGE_LIMIT } from "../da.interfaces";
 import MongoEntityDao from "./MongoEntityDao";
 import { Types } from "mongoose";
+import DaoError from "../../errors/DaoError";
 
 @Service()
 export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDao{
@@ -39,7 +40,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
                 .then(obj => obj?.toClass() || null)
                 .catch(err => {
                     console.error(err);
-                    throw new Error("Error updating document");
+                    throw new DaoError("Error updating document");
                 });
     }
 
@@ -56,7 +57,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
                .then(chat => (chat)? message : null)
                .catch(err => {
                     console.error(err);
-                    throw new Error("Error saving message");
+                    throw new DaoError("Error saving message");
                });
     }
 
@@ -75,7 +76,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
                .then(chat => (chat)? true : false)
                .catch(err => {
                     console.error(err);
-                    throw new Error("Error cleaning user messages");
+                    throw new DaoError("Error cleaning user messages");
                });
     }
 
@@ -102,7 +103,7 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
                 .then(res => {
 
                     if(res.length !== 1)
-                        throw new Error("Error finding chat");
+                        throw new DaoError("Error finding chat");
 
                     console.log(res)
 

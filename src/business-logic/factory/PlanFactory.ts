@@ -15,7 +15,12 @@ export default class PlanFactory{
         return new MidPlan(createdChats);
     }
 
-    createPremiumPlan(endDate:Date = new Date()){
+    createPremiumPlan(paramDate?:Date){
+        if(paramDate)
+            return new PremiumPlan(paramDate);
+        
+        let endDate = new Date();
+        endDate.setMonth(endDate.getMonth()+1); 
         return new PremiumPlan(endDate);
     }
 

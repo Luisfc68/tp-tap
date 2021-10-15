@@ -9,31 +9,31 @@ import User from "../entity/User";
 @Injectable()
 export default class UserFactory{
 
-    private createUser(imgUrl:string, username:string, password:string,email: string,
-        plan:SubscriptionPlan,favChats?:Chat[],id?:string):User{
+    private createUser(username:string, password:string,email: string,
+        plan:SubscriptionPlan,imgUrl?:string,favChats?:Chat[],id?:string):User{
 
-            return new User(imgUrl,username,password,email,plan,favChats,id);
+            return new User(username,password,email,plan,imgUrl,favChats,id);
     }
 
-    createRegularUser(imgUrl:string, username:string, password:string,
-        email: string,favChats?:Chat[],id?:string):User{
+    createRegularUser(username:string, password:string,
+        email: string,imgUrl?:string,favChats?:Chat[],id?:string):User{
 
-            return this.createUser(imgUrl,username,password,email,new RegularPlan(false),favChats,id);
+            return this.createUser(username,password,email,new RegularPlan(false),imgUrl,favChats,id);
     }
     
-    createMidUser(imgUrl:string, username:string, password:string,
-        email: string,favChats?:Chat[],id?:string):User{
+    createMidUser(username:string, password:string,
+        email: string,imgUrl?:string, favChats?:Chat[],id?:string):User{
 
-            return this.createUser(imgUrl,username,password,email,new MidPlan(0),favChats,id);
+            return this.createUser(username,password,email,new MidPlan(0),imgUrl,favChats,id);
     }
 
-    createPremiumUser(imgUrl:string, username:string, password:string,
-        email: string,favChats?:Chat[],id?:string):User{
+    createPremiumUser(username:string, password:string,
+        email: string,imgUrl?:string,favChats?:Chat[],id?:string):User{
 
             let endDate = new Date();
             endDate.setMonth(endDate.getMonth()+1); //Un mes en el futuro
 
-            return this.createUser(imgUrl,username,password,email,new PremiumPlan(endDate),favChats,id);
+            return this.createUser(username,password,email,new PremiumPlan(endDate),imgUrl,favChats,id);
     }
 
 

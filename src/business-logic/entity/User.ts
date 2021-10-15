@@ -11,7 +11,6 @@ import Message from "./Message";
 export default class User{
 
     @Property()
-    @Required()
     @Name("imgUrl")
     private _imgUrl: string;
 
@@ -51,10 +50,10 @@ export default class User{
     @Name("planDetails")
     private _plan: SubscriptionPlan;
     
-    constructor(_imgUrl:string, _username:string, _password:string,_email: string,
-        _plan:SubscriptionPlan,_favChats?:Ref<Chat>[],_id?:string){
+    constructor(_username:string, _password:string,_email: string,
+        _plan:SubscriptionPlan,_imgUrl?:string,_favChats?:Ref<Chat>[],_id?:string){
         
-            this._imgUrl = _imgUrl;
+            this._imgUrl = _imgUrl || process.env.DEFAULT_IMG || "";
             this._username = _username;
             this._password = _password;
             this._email = _email;

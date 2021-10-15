@@ -25,7 +25,7 @@ export default class UserController{
     @Returns(201,User).Groups(AppGroups.USER)
     signup(@BodyParams(User) reqUser:User):Promise<User>{
 
-        let newUser = this.userFactory.createRegularUser(reqUser.imgUrl,reqUser.username,reqUser.password,reqUser.email);
+        let newUser = this.userFactory.createRegularUser(reqUser.username,reqUser.password,reqUser.email);
 
         return this.userDao.insert(newUser)
                .catch(err => {

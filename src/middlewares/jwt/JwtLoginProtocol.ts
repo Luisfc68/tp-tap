@@ -2,10 +2,10 @@ import { Constant, Inject } from "@tsed/di";
 import { UserDao } from "../../data-access/da.interfaces";
 import MongoUserDao from "../../data-access/mongo/MongoUserDao";
 import { Protocol } from "@tsed/passport";
-import { BodyParams, Req } from "@tsed/common";
+import { $log, BodyParams, Req } from "@tsed/common";
 import User from "../../business-logic/entity/User";
 import { IStrategyOptions,Strategy } from "passport-local";
-import { Unauthorized } from "@tsed/exceptions";
+import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { sign } from "jsonwebtoken";
 import AuthProtocol from "../AuthProtocol";
 
@@ -41,6 +41,11 @@ export default class JwtLoginProtocol extends AuthProtocol{
                     const token = this.createToken(user);
 
                     return token;
+                })
+                .catch(err => {
+                    $log.error("CATCHED USERDAO EXCEPTION ON LOGIN ENDPOINT");
+                    $log.error(err);
+                    throw new BadRequest(err.message);
                 });
     }
 

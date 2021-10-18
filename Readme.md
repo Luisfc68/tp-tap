@@ -9,3 +9,4 @@ Agregar en el archivo **.env** en la carpeta raiz del proyecto
 |JWT_SECRET|Clave usada para firmar los jwt|akin5423o4in|**OBLIGATORIO**|
 |DEFAULT_IMG_USER|Imagen por defecto para los perfiles de usuario|https://i.imgur.com/zPFuLVO.jpeg|**OBLIGATORIO**|
 |DEFAULT_IMG_CHAT|Imagen por defecto para los iconos de chat|https://i.imgur.com/CC7V30O.jpeg|**OBLIGATORIO**|
+|SOCKET_EVENTS|Establece los eventos de socket que estarán activos según el ambiente| prod o dev |**OBLIGATIORIO**|

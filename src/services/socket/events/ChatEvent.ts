@@ -5,17 +5,17 @@ import { SocketEvents } from "../SocketEvents";
 export default abstract class ChatEvent{
 
     constructor(
-        private readonly _eventName:string
+        private readonly _eventName:SocketEvents
     ){}
 
     get eventName(){
         return this._eventName;
     }
 
-    abstract checkArgs(...args:any):boolean;
-    abstract executeEvent(socket:Socket,service:ChatSocketService,...args:any):void;
+    abstract checkArgs(args:any):boolean;
+    abstract executeEvent(socket:Socket,service:ChatSocketService,args:any):void;
 
-    handle(socket:Socket,service:ChatSocketService,...args:any){
+    handle(socket:Socket,service:ChatSocketService,args:any){
 
         if(this.checkArgs(args)){
             this.executeEvent(socket,service,args);

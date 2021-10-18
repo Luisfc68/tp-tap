@@ -12,7 +12,7 @@ export default class UserDisconnected extends ChatEvent{
         super(SocketEvents.DISCONECT);
     }
 
-    checkArgs(..._args: any): boolean {
+    checkArgs(_args: any): boolean {
        return true;
     }
     

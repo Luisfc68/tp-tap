@@ -105,8 +105,6 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
                     if(res.length !== 1)
                         throw new DaoError("Error finding chat");
 
-                    console.log(res)
-
                     return (<any>res[0])._messages; //Hay que devolverlo así porque el aggregate no lo mapea directo,
                 });                                //entonces el populate devuelve un documento que no está mapeado a la clase
     }

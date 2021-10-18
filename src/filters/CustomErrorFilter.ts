@@ -5,8 +5,10 @@ import {Exception} from "@tsed/exceptions";
 @Catch(Error)
 export class CustomErrorFilter implements ExceptionFilterMethods {
 
-  private readonly kwownErrors:Map<string,string> = new Map([
-    ["AJV_VALIDATION_ERROR", "Validation error"]
+  //Mapea a una tupla con mensaje y status http por si se quiere poner un status diferente
+  private readonly kwownErrors:Map<string,[string,number?]> = new Map([
+    ["AJV_VALIDATION_ERROR", ["Validation error"]],
+    ["TypeError", ["Image not provided",400]]
   ]);
 
   catch(exception: Exception, ctx: PlatformContext) {
@@ -25,11 +27,19 @@ export class CustomErrorFilter implements ExceptionFilterMethods {
   }
 
   mapError(error: any) {
+
+    let knownName:string|undefined,knownStatus:number|undefined;
     let name:string = error.origin?.name || error.name;
+
+    if(this.kwownErrors.has(name)){
+      knownName =  this.kwownErrors.get(name)![0];
+      knownStatus = this.kwownErrors.get(name)![1]
+    }
+
     return {
-      name: this.kwownErrors.get(name) || name,
+      name: knownName || name,
       message: error.message,
-      status: error.status || 500
+      status: error.status || knownStatus || 500
     };
   }
 

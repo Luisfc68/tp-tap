@@ -1,6 +1,7 @@
 import ImageService from "./ImageService";
-import { existsSync, mkdirSync, writeFileSync,createReadStream, ReadStream } from "fs"; 
+import { existsSync, mkdirSync, writeFileSync,createReadStream, ReadStream, rmSync } from "fs"; 
 import { PlatformMulterFile } from "@tsed/common";
+import * as Glob from "glob";
 
 export default class LocalImageService extends ImageService{
     
@@ -17,6 +18,9 @@ export default class LocalImageService extends ImageService{
 
             if(!existsSync(path))
                 mkdirSync(path,{ recursive: true });
+            
+            Glob.sync(`image/${group}/${id}.*`).forEach(file => rmSync(file));
+
             writeFileSync(path+file,img.buffer);
             
             return Promise.resolve(path+file); //Se devuelven de esta manera porque esta es la unica implementacion sincronica

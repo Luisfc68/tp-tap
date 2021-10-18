@@ -17,7 +17,7 @@ import Chat from "../../business-logic/entity/Chat";
 export default class ChatSocketService{
 
     private _activeUsers: Map<Socket,User>;
-    private _activeChats: Set<Chat>;
+    private _activeChats: Map<string,Chat>;//para agarrarlos por el id
     
     constructor(
         @IO io:Server,
@@ -28,7 +28,7 @@ export default class ChatSocketService{
     ){
         io.use((socket:Socket,next:any) => mid.action(socket,next));
         this._activeUsers = new Map<Socket,User>();
-        this._activeChats = new Set<Chat>();
+        this._activeChats = new Map<string,Chat>();
     }
         
     $onConnection(@SocketParam socket:Socket){
@@ -90,4 +90,10 @@ export default class ChatSocketService{
         });
     }
 
+    nextEvent(event:SocketEvents,socket:Socket,args:any){
+        this.events.filter(e => e.eventName === event)
+            .forEach(e => {
+                e.executeEvent(socket,this,args);
+            });
+    }
 }

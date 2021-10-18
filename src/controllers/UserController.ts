@@ -138,8 +138,11 @@ export default class UserController extends BaseController{
     @Post("/image")
     @Authorize("jwt")
     @Returns(200,User).Groups(AppGroups.USER)
-    setUserImage(@Req() req: Req,@MultipartFile("file") file: PlatformMulterFile):Promise<User>{
+    setUserImage(@Req() req: Req,@MultipartFile("image") file: PlatformMulterFile):Promise<User>{
         
+        if(!file)
+            throw new BadRequest("Image not provided");
+
         const id = super.verifyId(req);
         let user:User;
         

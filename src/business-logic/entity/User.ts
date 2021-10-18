@@ -11,6 +11,7 @@ import Message from "./Message";
 export default class User{
 
     @Property()
+    @Groups(AppGroups.NOT_USER,AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("imgUrl")
     private _imgUrl: string;
 

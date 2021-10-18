@@ -16,6 +16,7 @@ export default class Chat {
     private _title: string;
     
     @Property()
+    @Groups(AppGroups.NOT_USER,AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("imgUrl")
     private _imgUrl: string;
 

@@ -1,6 +1,6 @@
 import { Controller, Inject } from "@tsed/di";
 import { BodyParams } from "@tsed/platform-params";
-import { Patch, Post, Put, Required, Returns } from "@tsed/schema";
+import { Get, Patch, Post, Put, Required, Returns } from "@tsed/schema";
 import User from "../business-logic/entity/User";
 import UserFactory from "../business-logic/factory/UserFactory";
 import { AppGroups } from "../business-logic/GroupsEnum";
@@ -10,18 +10,24 @@ import { $log} from "@tsed/logger";
 import { BadRequest, Forbidden, NotFound } from "@tsed/exceptions";
 import { ErrorModifiers} from "../errors/errorEnum";
 import { Authenticate, Authorize } from "@tsed/passport";
-import { Req } from "@tsed/common";
+import { MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { SubscriptionPlan } from "../business-logic/bl.interfaces";
 import PlanFactory from "../business-logic/factory/PlanFactory";
+import ImageService from "../services/image/ImageService";
+import LocalImageService from "../services/image/LocalImageService";
+import BaseController from "./Controller"
 
 @Controller("/user")
-export default class UserController{
+export default class UserController extends BaseController{
 
     constructor(
         @Inject(MongoUserDao) private readonly userDao:UserDao,
         private readonly userFactory: UserFactory,
-        private readonly planFactory: PlanFactory
-    ){}
+        private readonly planFactory: PlanFactory,
+        @Inject(LocalImageService) private readonly imageService: ImageService
+    ){
+        super();
+    }
 
     @Post("/signup")
     @Returns(201,User).Groups(AppGroups.USER)
@@ -52,9 +58,7 @@ export default class UserController{
     @Returns(200,User).Groups(AppGroups.USER)
     updateUser(@Req() req: Req,@BodyParams(User) reqUser:User):Promise<User>{
 
-        const id = <string>req.user;
-        if(!id)
-            throw new BadRequest("Invalid user ID");
+        const id = super.verifyId(req);
 
         return  this.userDao.get(id)
                 .then(user => {
@@ -102,9 +106,7 @@ export default class UserController{
     @Returns(200,User).Groups(AppGroups.USER)
     changePlan(@Req() req: Req,@Required() @BodyParams("plan") planName: string):Promise<User>{
 
-        const id = <string>req.user;
-        if(!id)
-            throw new BadRequest("Invalid user ID");
+        const id = super.verifyId(req);
 
         return  this.userDao.get(id)
                 .then(user => {
@@ -130,6 +132,59 @@ export default class UserController{
                     $log.error("CATCHED USERDAO EXCEPTION ON CHANGEPLAN ENDPOINT");
                     $log.error(err);
                     throw new BadRequest(err.message);
+                });
+    }
+
+    @Post("/image")
+    @Authorize("jwt")
+    @Returns(200,User).Groups(AppGroups.USER)
+    setUserImage(@Req() req: Req,@MultipartFile("file") file: PlatformMulterFile):Promise<User>{
+        
+        const id = super.verifyId(req);
+        let user:User;
+        
+        return  this.userDao.get(id)
+                .then(u => {
+                    if(!u)
+                        throw new NotFound("User not found");
+                    user = u;
+                    return this.imageService.saveImage(id,AppGroups.USER,file);
+                })
+                .then(img => {
+                    user.imgUrl = img;
+                    return this.userDao.update(user);
+                })
+                .then(user => {
+                    if(!user)
+                        throw new NotFound("User not found");
+                    return user;
+                })
+                .catch(err => {
+                    $log.error("CATCHED EXCEPTION ON CHANGEIMAGE ENDPOINT");
+                    $log.error(err);
+                    throw new BadRequest(err.message);
+                });
+    }
+
+    @Get("/image")
+    @Authorize("jwt")
+    getUserImage(@Req() req:Req,@Res() res:Res) {
+
+        const id = super.verifyId(req);
+        
+        return  this.userDao.get(id)
+                .then(user => {
+                    if(!user)
+                        throw new NotFound("User not found");
+                    let img:string = user.imgUrl;
+                    let extension = img.slice(img.lastIndexOf(".")+1);
+                    res.contentType("image/"+extension);
+                    return this.imageService.getImage(user.imgUrl,AppGroups.USER);
+                })
+                .catch(err => {
+                    $log.error("CATCHED EXCEPTION ON GETIMAGE ENDPOINT");
+                    $log.error(err);
+                    throw new NotFound(err.message);
                 });
     }
     

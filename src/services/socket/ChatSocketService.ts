@@ -12,23 +12,26 @@ import SocketIOMiddleware from "../../middlewares/SocketIOMiddleware";
 import ChatEvent from "./events/ChatEvent";
 import { SocketEvents } from "./SocketEvents";
 import Chat from "../../business-logic/entity/Chat";
+import ProxyChatDao from "../../data-access/proxy/ProxyChatDao";
 
 @SocketService()
 export default class ChatSocketService{
 
     private _activeUsers: Map<Socket,User>;
     private _activeChats: Map<string,Chat>;//para agarrarlos por el id
-    
+    private _chatDao: ChatDao;
+
     constructor(
         @IO io:Server,
         @Inject(JwtSocket) private mid:SocketIOMiddleware,
         @Inject(MongoUserDao) private _userDao:UserDao,
-        @Inject(MongoChatDao) private _chatDao:ChatDao,
+        @Inject(MongoChatDao) _chatDao:ChatDao,
         @Inject(ActiveEvents) private events:ChatEvent[]
     ){
         io.use((socket:Socket,next:any) => mid.action(socket,next));
         this._activeUsers = new Map<Socket,User>();
         this._activeChats = new Map<string,Chat>();
+        this._chatDao = new ProxyChatDao(_chatDao,this._activeChats);
     }
         
     $onConnection(@SocketParam socket:Socket){

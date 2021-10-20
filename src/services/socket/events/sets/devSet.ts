@@ -1,4 +1,5 @@
 import { EventConstructor } from "../../socket.interfaces";
+import CleanLeave from "../implementations/CleanLeave";
 import JoinRoom from "../implementations/JoinRoom";
 import LeaveRoom from "../implementations/LeaveRoom";
 import MessageRequest from "../implementations/MessageRequest";
@@ -10,7 +11,8 @@ const devEvents:EventConstructor[] = [
     JoinRoom,
     MessageRequest,
     LeaveRoom,
-    MessageSent
+    MessageSent,
+    CleanLeave
 ];
 
 export default devEvents;

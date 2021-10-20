@@ -5,7 +5,8 @@ export enum SocketEvents{
     CHAT_REQUEST="chat-request",
     MSG_REQUEST="msg-request",
     LEAVE_ROOM="leave-room",
-    MSG_SENT="msg-sent"
+    MSG_SENT="msg-sent",
+    CLEAN_LEAVE="clean-leave-room"
 }
 
 // AGREGAR FAV CHAT Y QUITAR FAV CHAT

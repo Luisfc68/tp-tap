@@ -48,7 +48,10 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
 
         const update = {
             $push: {
-                _messages: message
+                _messages: {
+                    $each: [message],
+                    $position: 0
+                }
             }
         }
 

@@ -127,7 +127,7 @@ export default class Chat {
     }
 
     newMessage(msg:Message){
-        this.messages.push(msg);
+        this.messages.unshift(msg);
     }
 
     addUser(u:User){

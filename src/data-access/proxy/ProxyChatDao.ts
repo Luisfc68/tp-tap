@@ -16,7 +16,7 @@ export default class ProxyChatDao implements ChatDao{
                 .then(msg => {
                     if(!msg)
                         return msg;
-                    this.cache.get(chat.id!)?.messages.unshift(msg);
+                    this.cache.get(chat.id!)?.newMessage(msg);
                     return msg;
                 });
     }

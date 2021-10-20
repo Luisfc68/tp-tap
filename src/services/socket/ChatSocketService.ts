@@ -89,14 +89,14 @@ export default class ChatSocketService{
 
     private setEvents(socket:Socket):void{
         this.events.forEach(e => {
-            socket.on(e.eventName,(args) => e.executeEvent(socket,this,args))
+            socket.on(e.eventName,(args) => e.handle(socket,this,args));
         });
     }
 
     nextEvent(event:SocketEvents,socket:Socket,args:any){
         this.events.filter(e => e.eventName === event)
             .forEach(e => {
-                e.executeEvent(socket,this,args);
+                e.handle(socket,this,args);
             });
     }
 }

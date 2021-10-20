@@ -39,7 +39,7 @@ export default class ProxyChatDao implements ChatDao{
         if(!cached)
             return null;
         
-        if(offset+MESSAGE_LIMIT<cached.messages.length){
+        if(offset+MESSAGE_LIMIT<=cached.messages.length){
             $log.info("Cache used");
             return cached.messages.slice(offset,offset+MESSAGE_LIMIT)
         }else 
@@ -51,7 +51,6 @@ export default class ProxyChatDao implements ChatDao{
         let cached:Message[]|null = this.getCachedMessages(chat,offset);
 
         if(cached !== null){
-            $log.info("Cache used");
             return Promise.resolve(cached);
         }
         
@@ -59,7 +58,7 @@ export default class ProxyChatDao implements ChatDao{
                 .then(messages => {
 
                     if(chat.id)
-                        this.cache.get(chat.id)?.messages.concat(messages);
+                        this.cache.get(chat.id)?.messages.push(...messages);
                         
                     return messages;
                 });

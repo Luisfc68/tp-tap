@@ -16,7 +16,7 @@ export default class MessageRequest extends ChatEvent{
     }
 
     checkArgs(args:any):boolean{
-        return args.offset;
+        return args.offset !== undefined;
     }
 
     executeEvent(socket:Socket,service:ChatSocketService,args:any):void{

@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Injectable } from "../../../../../node_modules/@tsed/di/lib";
+import { Injectable } from "@tsed/di";
 import { serialize } from "@tsed/json-mapper";
 import User from "../../../../business-logic/entity/User";
 import ChatSocketService from "../../ChatSocketService";

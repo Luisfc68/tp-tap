@@ -1,4 +1,4 @@
-import { $log } from "../../../node_modules/@tsed/logger/lib";
+import { $log } from "@tsed/logger";
 import Chat from "../../business-logic/entity/Chat";
 import Message from "../../business-logic/entity/Message";
 import User from "../../business-logic/entity/User";

@@ -3,8 +3,8 @@ import { verify } from "jsonwebtoken";
 import jwtAuthConfig from "../../configurations/jwtAuth.config";
 import { Socket, } from "socket.io";
 import { Unauthorized } from "@tsed/exceptions";
-import { $log } from "../../../node_modules/@tsed/logger/lib";
-import { Injectable } from "../../../node_modules/@tsed/di/lib";
+import { $log } from "@tsed/logger";
+import { Injectable } from "@tsed/di";
 
 @Injectable()
 export default class JwtSocket extends SocketIOMiddleware{

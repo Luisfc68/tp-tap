@@ -5,7 +5,7 @@ import { AppGroups } from "../../../../business-logic/GroupsEnum";
 import ChatSocketService from "../../ChatSocketService";
 import { SocketEvents } from "../../SocketEvents";
 import ChatEvent from "../ChatEvent";
-import { Injectable } from "../../../../../node_modules/@tsed/di/lib";
+import { Injectable } from "@tsed/di";
 
 @Injectable()
 export default class ChatRequest extends ChatEvent {

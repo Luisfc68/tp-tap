@@ -1,7 +1,7 @@
 import { IO, Server, SocketService, Socket as SocketParam } from "@tsed/socketio";
 import { Socket } from "socket.io"
-import { Inject } from "../../../node_modules/@tsed/di/lib";
-import { $log } from "../../../node_modules/@tsed/logger/lib";
+import { Inject } from "@tsed/di";
+import { $log } from "@tsed/logger";
 import User from "../../business-logic/entity/User";
 import { ActiveEvents } from "./events/loadEvents";
 import { ChatDao, UserDao } from "../../data-access/da.interfaces";

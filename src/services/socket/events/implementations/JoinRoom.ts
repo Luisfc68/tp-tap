@@ -4,7 +4,7 @@ import User from "../../../../business-logic/entity/User";
 import ChatSocketService from "../../ChatSocketService";
 import { SocketEvents } from "../../SocketEvents";
 import ChatEvent from "../ChatEvent";
-import { $log } from "../../../../../node_modules/@tsed/logger/lib";
+import { $log } from "@tsed/logger";
 import { AppGroups } from "../../../../business-logic/GroupsEnum";
 import { serialize } from "@tsed/json-mapper";
 

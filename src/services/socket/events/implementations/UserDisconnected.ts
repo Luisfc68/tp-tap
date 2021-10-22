@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
-import { Injectable } from "../../../../../node_modules/@tsed/di/lib";
-import { $log } from "../../../../../node_modules/@tsed/logger/lib";
+import { Injectable } from "@tsed/di";
+import { $log } from "@tsed/logger";
 import ChatSocketService from "../../ChatSocketService";
 import { SocketEvents } from "../../SocketEvents";
 import ChatEvent from "../ChatEvent";

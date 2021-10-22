@@ -7,7 +7,8 @@
     "devd": "tsc -p . && docker run -it -p 8080:8080 --rm --name my-running-script -v /home/luis/up/tap/tp-tap:/usr/src/app -w /usr/src/app node node -r dotenv/config ./out/app.js",
     "dev": "tsc -p . && node -r dotenv/config ./out/app.js",
     "prod": "tsc -p . && node ./out/app.js",
-    "clean": "rm -rf ./out/*"
+    "clean": "rm -rf ./out/*",
+    "start": "tsc -p . && node ./out/app.js"
   },
   "repository": {
     "type": "git",

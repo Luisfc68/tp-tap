@@ -4,3 +4,5 @@ out/
 /image/**
 !/image/*/
 !/image/*/.gitkeep
+/data/**
+!/data/.gitkeep

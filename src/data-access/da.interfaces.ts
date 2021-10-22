@@ -4,7 +4,7 @@ import User from "../business-logic/entity/User";
 
 export const PAGE_LIMIT:number = 5;
 
-export const MESSAGE_LIMIT:number = 3; //PARA PROBAR ES 3, CAMBIAR A 10 LUEGO
+export const MESSAGE_LIMIT:number = 10; //reducir para probar
 
 export interface Dao<T>{
 

@@ -15,7 +15,7 @@ export default class PlanFactory{
         return new MidPlan(createdChats);
     }
 
-    createPremiumPlan(paramDate?:Date){
+    createPremiumPlan(paramDate?:Date):SubscriptionPlan{
         if(paramDate)
             return new PremiumPlan(paramDate);
         

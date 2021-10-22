@@ -16,6 +16,8 @@ import PlanFactory from "../business-logic/factory/PlanFactory";
 import ImageService from "../services/image/ImageService";
 import LocalImageService from "../services/image/LocalImageService";
 import BaseController from "./Controller"
+import ChatSocketService from "../services/socket/ChatSocketService";
+import { SocketEvents } from "../services/socket/SocketEvents";
 
 @Controller("/user")
 export default class UserController extends BaseController{
@@ -24,7 +26,8 @@ export default class UserController extends BaseController{
         @Inject(MongoUserDao) private readonly userDao:UserDao,
         private readonly userFactory: UserFactory,
         private readonly planFactory: PlanFactory,
-        @Inject(LocalImageService) private readonly imageService: ImageService
+        @Inject(LocalImageService) private readonly imageService: ImageService,
+        private readonly socketService:ChatSocketService
     ){
         super();
     }
@@ -74,6 +77,7 @@ export default class UserController extends BaseController{
                 .then(user => {
                     if(!user)
                         throw new NotFound("User not found");
+                    this.socketService.runForUser(user,SocketEvents.USER_CHANGED,user);
                     return user;
                 })
                 .catch(err => {
@@ -126,6 +130,7 @@ export default class UserController extends BaseController{
                 .then(user => {
                     if(!user)
                         throw new NotFound("User not found");
+                    this.socketService.runForUser(user,SocketEvents.USER_CHANGED,user);
                     return user;
                 })
                 .catch(err => {
@@ -160,6 +165,7 @@ export default class UserController extends BaseController{
                 .then(user => {
                     if(!user)
                         throw new NotFound("User not found");
+                    this.socketService.runForUser(user,SocketEvents.USER_CHANGED,user);
                     return user;
                 })
                 .catch(err => {

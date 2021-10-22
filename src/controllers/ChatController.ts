@@ -13,6 +13,8 @@ import MongoUserDao from "../data-access/mongo/MongoUserDao";
 import { ErrorModifiers } from "../errors/errorEnum";
 import ImageService from "../services/image/ImageService";
 import LocalImageService from "../services/image/LocalImageService";
+import ChatSocketService from "../services/socket/ChatSocketService";
+import { SocketEvents } from "../services/socket/SocketEvents";
 import BaseController from "./Controller"
 
 @Controller("/chat")
@@ -22,7 +24,8 @@ export default class ChatController extends BaseController{
         @Inject(MongoChatDao) private readonly chatDao:ChatDao,
         @Inject(MongoUserDao) private readonly userDao:UserDao,
         private readonly chatFactory: ChatFactory,
-        @Inject(LocalImageService) private readonly imageService: ImageService
+        @Inject(LocalImageService) private readonly imageService: ImageService,
+        private readonly socketService:ChatSocketService
     ){
         super();
     }
@@ -107,7 +110,12 @@ export default class ChatController extends BaseController{
 
                     return this.chatDao.update(chat!);
                 })
-                .then(chat => chat!)
+                .then(chat => {
+                    if(!chat)
+                        throw new NotFound("Chat not found");
+                    this.socketService.runForChat(chat,SocketEvents.CHAT_CHANGED,chat);
+                    return chat;
+                })
                 .catch(err => {
                     $log.error("CATCHED CHATDAO EXCEPTION ON UPDATECHAT ENDPOINT");
                     $log.error(err);
@@ -140,6 +148,7 @@ export default class ChatController extends BaseController{
                 .then(c => {
                     if(!c)
                         throw new NotFound("Chat not found");
+                    this.socketService.runForChat(c,SocketEvents.CHAT_CHANGED,c);
                     return c;
                 })
                 .catch(err => {

@@ -24,7 +24,7 @@ export default class ChatSocketService{
     private _chatDao: ChatDao;
 
     constructor(
-        @IO io:Server,
+        @IO private  io:Server,
         @Inject(JwtSocket) private mid:SocketIOMiddleware,
         @Inject(MongoUserDao) private _userDao:UserDao,
         @Inject(MongoChatDao) _chatDao:ChatDao,
@@ -102,4 +102,31 @@ export default class ChatSocketService{
                 e.handle(socket,this,args);
             });
     }
+
+    runForChat(chat:Chat,event:SocketEvents,args:any){
+
+        let activeChat:Chat|undefined;
+        if(chat.id)
+            activeChat = this.activeChats.get(chat.id);
+        else
+            return;
+        
+        if(!activeChat) return;
+
+        this.io.to(chat.id).emit(event,serialize(args,{ type: Chat, groups: AppGroups.CHAT }));
+
+    }
+
+    runForUser(user:User,event:SocketEvents,args:any){
+        
+        let activeUser:User|undefined = [...this.activeUsers.values()].filter(u => u.id === user.id)[0];
+
+        let chat = activeUser?.actualChat;
+
+        if(!chat || !chat.id) return;
+
+        this.io.to(chat.id).emit(event,serialize(args,{ type: User, groups: AppGroups.USER }));
+
+    }
+
 }

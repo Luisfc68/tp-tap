@@ -27,5 +27,10 @@ export interface ChatDao extends Dao<Chat>{
     insertMessage(chat:Chat,message:Message):Promise<Message|null>;
     cleanMessages(chat:Chat,user:User):Promise<boolean>;
     getMessages(chat:Chat,offset:number):Promise<Message[]>;
+    chatQuery(offset: number,chat:{
+        title?:string,
+        description?:string,
+        tags?:string[]
+    }):Promise<Chat[]>;
 
 }

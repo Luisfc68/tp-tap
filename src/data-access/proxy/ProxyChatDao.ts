@@ -111,4 +111,9 @@ export default class ProxyChatDao implements ChatDao{
         return this.original.getAll(offset);
     }
 
+    chatQuery(offset: number, chat: { title?: string, description?: string, tags?: string[] }): Promise<Chat[]> {
+        //metodo sin cache
+        return this.original.chatQuery(offset,chat);
+    }
+
 }

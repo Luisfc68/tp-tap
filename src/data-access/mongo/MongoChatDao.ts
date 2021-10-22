@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import Chat from "../../business-logic/entity/Chat";
 import Message from "../../business-logic/entity/Message";
 import User from "../../business-logic/entity/User";
-import { ChatDao, MESSAGE_LIMIT } from "../da.interfaces";
+import { ChatDao, MESSAGE_LIMIT, PAGE_LIMIT } from "../da.interfaces";
 import MongoEntityDao from "./MongoEntityDao";
 import { Types } from "mongoose";
 import DaoError from "../../errors/DaoError";
@@ -110,6 +110,37 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
 
                     return (<any>res[0])._messages; //Hay que devolverlo así porque el aggregate no lo mapea directo,
                 });                                //entonces el populate devuelve un documento que no está mapeado a la clase
+    }
+
+    private parseQuery(chat: { title?: string, description?: string, tags?: string[] }):any{
+        let query:any = {
+            _title: {
+                $regex: chat.title || ""
+            },
+            _description: {
+                $regex: chat.description || ""
+            },
+            _tags:{
+                $elemMatch: {
+                    $in: chat.tags || []
+                }
+            }
+        };
+
+        return query;
+    }
+
+    chatQuery(offset: number = 0, chat: { title?: string, description?: string, tags?: string[] }): Promise<Chat[]> {
+        
+        const query = this.parseQuery(chat);
+
+        return this.model.find(query)
+               .select(super.selection)
+               .skip(offset)
+               .limit(PAGE_LIMIT)
+               .populate(this.populatedFields.join(" "))
+               .exec()
+               .then(arr => arr.map(obj => obj.toClass()));
     }
 
 }

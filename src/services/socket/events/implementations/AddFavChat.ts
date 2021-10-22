@@ -4,6 +4,8 @@ import User from "../../../../business-logic/entity/User";
 import ChatSocketService from "../../ChatSocketService";
 import { SocketEvents } from "../../SocketEvents";
 import ChatEvent from "../ChatEvent";
+import { serialize } from "@tsed/json-mapper";
+import { AppGroups } from "../../../../business-logic/GroupsEnum";
 
 @Injectable()
 export default class AddFavChat extends ChatEvent{
@@ -32,7 +34,7 @@ export default class AddFavChat extends ChatEvent{
         .then(user => {
 
             if(!user) return;
-            socket.emit(SocketEvents.ADD_FAV_CHAT,user);
+            socket.emit(SocketEvents.ADD_FAV_CHAT,serialize(user,{ type: User, groups: AppGroups.USER }));
         })
         .catch(e => {
             socket.emit(SocketEvents.ERROR,e.message);

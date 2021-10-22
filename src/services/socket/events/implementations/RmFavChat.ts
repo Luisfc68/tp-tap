@@ -1,9 +1,11 @@
 import { Socket } from "socket.io";
 import { Injectable } from "../../../../../node_modules/@tsed/di/lib";
+import { serialize } from "@tsed/json-mapper";
 import User from "../../../../business-logic/entity/User";
 import ChatSocketService from "../../ChatSocketService";
 import { SocketEvents } from "../../SocketEvents";
 import ChatEvent from "../ChatEvent";
+import { AppGroups } from "../../../../business-logic/GroupsEnum";
 
 @Injectable()
 export default class RmFavChat extends ChatEvent{
@@ -32,7 +34,7 @@ export default class RmFavChat extends ChatEvent{
         .then(user => {
 
             if(!user) return;
-            socket.emit(SocketEvents.RM_FAV_CHAT,user);
+            socket.emit(SocketEvents.RM_FAV_CHAT,serialize(user,{ type: User, groups: AppGroups.USER }));
         })
         .catch(e => {
             socket.emit(SocketEvents.ERROR,e.message);

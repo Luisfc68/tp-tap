@@ -36,7 +36,10 @@ export default class MessageSent extends ChatEvent{
                     
                     if(id)
                         socket.to(id).emit(SocketEvents.MSG_SENT,serialize(msg,serializationOps));
-               });
+               })
+               .catch(e => {
+                    socket.emit(SocketEvents.ERROR,e.message);
+                });
     }
 
 }

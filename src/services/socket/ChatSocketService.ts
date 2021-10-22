@@ -13,6 +13,8 @@ import ChatEvent from "./events/ChatEvent";
 import { SocketEvents } from "./SocketEvents";
 import Chat from "../../business-logic/entity/Chat";
 import ProxyChatDao from "../../data-access/proxy/ProxyChatDao";
+import { AppGroups } from "../../business-logic/GroupsEnum";
+import { serialize } from "@tsed/json-mapper";
 
 @SocketService()
 export default class ChatSocketService{
@@ -46,6 +48,7 @@ export default class ChatSocketService{
                     this._activeUsers.set(socket,user);
                     this.setEvents(socket);
                     $log.info(user.username+" se conecto!");
+                    socket.emit(SocketEvents.CONNECTION_SUCCESS,serialize(user,{ type: User, groups: AppGroups.USER }));
                 }
         })
         .catch(err => this.socketErrorHandler(err,socket));

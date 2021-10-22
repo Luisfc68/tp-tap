@@ -142,4 +142,21 @@ export default class User{
         this.leaveChat();
     }
 
+    addFavChat(chat: Ref<Chat>):void{
+        this.favChats.push(chat);
+    }
+
+    removeFavChat(chat: Ref<Chat>):void{
+        let index = this.favChats.findIndex(c => {
+
+            let sameChatId:boolean = c === chat; 
+            let sameChat:boolean = (<Chat>c)._id === (<Chat>chat)._id; 
+
+            return sameChat || sameChatId;
+        });
+
+        if(index>-1)
+            this.favChats.splice(index,1);
+    }
+
 }

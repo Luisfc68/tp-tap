@@ -143,20 +143,23 @@ export default class User{
     }
 
     addFavChat(chat: Ref<Chat>):void{
-        this.favChats.push(chat);
+        if(this.favChats.filter(c => this.compareFavChat(c,chat)).length === 0)
+            this.favChats.push(chat);
     }
 
     removeFavChat(chat: Ref<Chat>):void{
-        let index = this.favChats.findIndex(c => {
-
-            let sameChatId:boolean = c === chat; 
-            let sameChat:boolean = (<Chat>c)._id === (<Chat>chat)._id; 
-
-            return sameChat || sameChatId;
-        });
+        let index = this.favChats.findIndex(c => this.compareFavChat(c,chat));
 
         if(index>-1)
             this.favChats.splice(index,1);
+    }
+
+    private compareFavChat(c1:Ref<Chat>,c2:Ref<Chat>){
+
+        let sameChatId:boolean = c1 === c2;
+        let sameChat:boolean = (<Chat>c1)._id === (<Chat>c2)._id;
+
+        return sameChat || sameChatId;
     }
 
 }

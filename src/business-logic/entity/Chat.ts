@@ -123,7 +123,7 @@ export default class Chat {
     }
 
     cleanMessages(user:User):void{
-        this.messages = this.messages.filter(m => !this.compareUser(m.user,user));
+        this.messages = this.messages.filter(m => !this.compareUser((<any>m)._user,user));
     }
 
     newMessage(msg:Message){

@@ -45,6 +45,7 @@ export default class JwtLoginProtocol extends AuthProtocol{
                 .catch(err => {
                     $log.error("CATCHED USERDAO EXCEPTION ON LOGIN ENDPOINT");
                     $log.error(err);
+                    if(err.status === 401) throw err;
                     throw new BadRequest(err.message);
                 });
     }

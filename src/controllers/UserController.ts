@@ -83,6 +83,7 @@ export default class UserController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED USERDAO EXCEPTION ON UPDATEUSER ENDPOINT");
                     $log.error(err);
+                    if(err.status === 404) throw err;
                     throw new BadRequest(err.message);
                 });
     }
@@ -136,6 +137,7 @@ export default class UserController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED USERDAO EXCEPTION ON CHANGEPLAN ENDPOINT");
                     $log.error(err);
+                    if(err.status === 404 || err.status === 403) throw err;
                     throw new BadRequest(err.message);
                 });
     }
@@ -171,6 +173,7 @@ export default class UserController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED EXCEPTION ON CHANGEIMAGE ENDPOINT");
                     $log.error(err);
+                    if(err.status === 404) throw err;
                     throw new BadRequest(err.message);
                 });
     }
@@ -193,6 +196,7 @@ export default class UserController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED EXCEPTION ON GETIMAGE ENDPOINT");
                     $log.error(err);
+                    if(err.status === 404) throw err;
                     throw new NotFound(err.message);
                 });
     }

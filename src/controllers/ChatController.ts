@@ -90,7 +90,7 @@ export default class ChatController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED CHATDAO EXCEPTION ON DELETECHAT ENDPOINT");
                     $log.error(err);
-
+                    if(err.status === 404 || err.status === 403) throw err;
                     throw new BadRequest(err.message);
                 });
     }
@@ -119,7 +119,7 @@ export default class ChatController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED CHATDAO EXCEPTION ON UPDATECHAT ENDPOINT");
                     $log.error(err);
-
+                    if(err.status === 404 || err.status === 403) throw err;
                     throw new BadRequest(err.message);
                 });
     }
@@ -154,6 +154,7 @@ export default class ChatController extends BaseController{
                 .catch(err => {
                     $log.error("CATCHED EXCEPTION ON CHANGEIMAGE ENDPOINT");
                     $log.error(err);
+                    if(err.status === 404 || err.status === 403) throw err;
                     throw new BadRequest(err.message);
                 });
     }

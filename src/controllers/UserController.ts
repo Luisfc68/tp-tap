@@ -10,7 +10,7 @@ import { $log} from "@tsed/logger";
 import { BadRequest, Forbidden, NotFound } from "@tsed/exceptions";
 import { ErrorModifiers} from "../errors/errorEnum";
 import { Authenticate, Authorize } from "@tsed/passport";
-import { MultipartFile, PlatformMulterFile, Req, Res } from "@tsed/common";
+import { MultipartFile, PathParams, PlatformMulterFile, Req, Res } from "@tsed/common";
 import { SubscriptionPlan } from "../business-logic/bl.interfaces";
 import PlanFactory from "../business-logic/factory/PlanFactory";
 import ImageService from "../services/image/ImageService";
@@ -69,7 +69,8 @@ export default class UserController extends BaseController{
                         throw new NotFound("User not found");
 
                     user.username = reqUser.username; //favChats cambia por socket y plan e img por otros endpoint
-                    user.password = reqUser.password;
+                    if(reqUser.password)
+                        user.password = reqUser.password;
                     user.email = reqUser.email;
 
                     return this.userDao.update(user);
@@ -178,11 +179,10 @@ export default class UserController extends BaseController{
                 });
     }
 
-    @Get("/image")
-    @Authorize("jwt")
-    getUserImage(@Req() req:Req,@Res() res:Res) {
+    @Get("/image/:userId")
+    getUserImage(@Res() res:Res,@PathParams("userId") userId:string) {
 
-        const id = super.verifyId(req);
+        const id = userId;
         
         return  this.userDao.get(id)
                 .then(user => {

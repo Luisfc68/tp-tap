@@ -22,7 +22,6 @@ export default class User{
     private _username: string;
 
     @Property()
-    @Required()
     @Groups(AppGroups.NOT_USER,AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("password")
     private _password: string;

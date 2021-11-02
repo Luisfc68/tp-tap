@@ -160,7 +160,6 @@ export default class ChatController extends BaseController{
     }
 
     @Get("/image/:chatId")
-    @Authorize("jwt")
     getChatImage(@Res() res:Res,@PathParams("chatId") chatId:string){
 
         return  this.chatDao.get(chatId)

@@ -2,7 +2,7 @@ import Chat from "../business-logic/entity/Chat";
 import Message from "../business-logic/entity/Message";
 import User from "../business-logic/entity/User";
 
-export const PAGE_LIMIT:number = 5;
+export const PAGE_LIMIT:number = 10;
 
 export const MESSAGE_LIMIT:number = 10; //reducir para probar
 

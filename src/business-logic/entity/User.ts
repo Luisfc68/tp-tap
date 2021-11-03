@@ -22,7 +22,6 @@ export default class User{
     private _username: string;
 
     @Property()
-    @Required()
     @Groups(AppGroups.NOT_USER,AppGroups.NOT_CHAT,AppGroups.NOT_MSG)
     @Name("password")
     private _password: string;
@@ -157,7 +156,8 @@ export default class User{
     private compareFavChat(c1:Ref<Chat>,c2:Ref<Chat>){
 
         let sameChatId:boolean = c1 === c2;
-        let sameChat:boolean = (<Chat>c1)._id === (<Chat>c2)._id && (<Chat>c1).title === (<Chat>c2).title;
+        let sameChat:boolean = ((<Chat>c1)._id === (<Chat>c2)._id || (<Chat>c1).title === (<Chat>c2).title)
+            && (<Chat>c1)._id !== undefined && (<Chat>c2)._id !== undefined;
 
         return sameChat || sameChatId;
     }

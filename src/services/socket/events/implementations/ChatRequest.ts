@@ -24,14 +24,25 @@ export default class ChatRequest extends ChatEvent {
         const { title,description,tags,offset } = args;
         const queryOffset:number = parseInt(offset);
 
-        service.chatDao.chatQuery(queryOffset,{ title,description,tags })
-               .then(chats => {
+        if(title || description || tags){
+            service.chatDao.chatQuery(queryOffset,{ title,description,tags })
+                .then(chats => {
                     let serialized = serialize(chats,{type: Chat,groups: AppGroups.CHAT});
                     socket.emit(SocketEvents.CHAT_REQUEST,serialized);
-               })
-               .catch(e => {
+                })
+                .catch(e => {
                     socket.emit(SocketEvents.ERROR,e.message);
                 });
+        }else{
+            service.chatDao.getAll(queryOffset)
+                .then(chats => {
+                    let serialized = serialize(chats,{type: Chat,groups: AppGroups.CHAT});
+                    socket.emit(SocketEvents.CHAT_REQUEST,serialized);
+                })
+                .catch(e => {
+                    socket.emit(SocketEvents.ERROR,e.message);
+                });
+        }
     }
 
 }

@@ -123,7 +123,7 @@ export default class Chat {
     }
 
     cleanMessages(user:User):void{
-        this.messages = this.messages.filter(m => m.user !== user);
+        this.messages = this.messages.filter(m => !this.compareUser((<any>m)._user,user));
     }
 
     newMessage(msg:Message){
@@ -144,6 +144,16 @@ export default class Chat {
     removeUser(u:User){
         if(this._users.delete(u))
             u.actualChat = null;
+    }
+
+    private compareUser(u1:Ref<User>,u2:Ref<User>){
+
+        let sameUserId:boolean = u1 === u2;
+        let sameUser:boolean = ((<User>u1)._id === (<User>u2)._id || (<User>u1).username === (<User>u2).username)
+            && (<User>u1)._id !== undefined && (<User>u2)._id !== undefined;
+
+        return sameUser || sameUserId;
+
     }
 
 }

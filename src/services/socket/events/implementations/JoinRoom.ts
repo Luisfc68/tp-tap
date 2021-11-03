@@ -38,6 +38,7 @@ export default class JoinRoom extends ChatEvent{
             let serialized = serialize(user,{type: User,groups: [AppGroups.USER]});
             socket.to(chat.id!).emit(SocketEvents.JOIN_ROOM,serialized);
             socket.join(chat.id!);
+            socket.emit(SocketEvents.JOIN_ROOM,true);
             service.nextEvent(SocketEvents.MSG_REQUEST,socket,{offset: 0});
         })
         .catch(e => {

@@ -155,11 +155,20 @@ export default class User{
 
     private compareFavChat(c1:Ref<Chat>,c2:Ref<Chat>){
 
-        let sameChatId:boolean = c1 === c2;
-        let sameChat:boolean = ((<Chat>c1)._id === (<Chat>c2)._id || (<Chat>c1).title === (<Chat>c2).title)
-            && (<Chat>c1)._id !== undefined && (<Chat>c2)._id !== undefined;
+        const title1 = (<any>c1)._title;
+        const title2 = (<any>c2)._title;
 
-        return sameChat || sameChatId;
+        const id1 = (<any>c1)._id
+        const id2 = (<any>c2)._id
+
+        if(title1 && title2 && title1 === title2 )
+            return true;
+        if(id1 && id2 && id1 == id2)
+            return true;
+        if(c1 === c2)
+            return true;
+
+        return false;
     }
 
 }

@@ -148,11 +148,20 @@ export default class Chat {
 
     private compareUser(u1:Ref<User>,u2:Ref<User>){
 
-        let sameUserId:boolean = u1 === u2;
-        let sameUser:boolean = ((<User>u1)._id === (<User>u2)._id || (<User>u1).username === (<User>u2).username)
-            && (<User>u1)._id !== undefined && (<User>u2)._id !== undefined;
+        const name1 = (<any>u1).username;      
+        const name2 = (<any>u2).username;
 
-        return sameUser || sameUserId;
+        const id1 = (<any>u1)._id
+        const id2 = (<any>u2)._id
+
+        if(name1 && name2 && name1 === name2 )
+            return true;
+        if(id1 && id2 && id1 == id2)
+            return true;
+        if(u1 === u2)
+            return true;
+
+        return false;
 
     }
 

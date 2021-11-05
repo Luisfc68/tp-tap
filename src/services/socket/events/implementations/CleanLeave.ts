@@ -30,8 +30,11 @@ export default class CleanLeave extends ChatEvent{
                     if(res === false) 
                         return;
 
+                    const chatId = user!.actualChat?._id
+                    
                     let serialized = serialize(user,{type: User,groups: [AppGroups.USER]});
-                    socket.emit(SocketEvents.CLEAN_LEAVE,serialized);
+                    if(chatId)
+                        socket.to(chatId).emit(SocketEvents.CLEAN_LEAVE,serialized);
                     service.nextEvent(SocketEvents.LEAVE_ROOM,socket,args);
                })
                .catch(e => {

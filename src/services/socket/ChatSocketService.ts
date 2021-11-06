@@ -86,7 +86,7 @@ export default class ChatSocketService{
             return;
 
         let socket = result[0];
-        socket.emit(SocketEvents.ERROR,"Another connection started");
+        socket.emit(SocketEvents.OTHER_CONNECTION,"Another connection started");
         socket.disconnect(true);
     }
 

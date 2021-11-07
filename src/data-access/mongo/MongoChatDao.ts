@@ -113,21 +113,25 @@ export default class MongoChatDao extends MongoEntityDao<Chat> implements ChatDa
     }
 
     private parseQuery(chat: { title?: string, description?: string, tags?: string[] }):any{
+
+        let tagsField:any = {
+            _tags:{
+                $elemMatch: {
+                    $in: chat.tags
+                }
+            }
+        };
+
         let query:any = {
             _title: {
                 $regex: chat.title || ""
             },
             _description: {
                 $regex: chat.description || ""
-            },
-            _tags:{
-                $elemMatch: {
-                    $in: chat.tags || []
-                }
             }
         };
 
-        return query;
+        return (chat.tags) ? {...query,...tagsField} : query;
     }
 
     chatQuery(offset: number = 0, chat: { title?: string, description?: string, tags?: string[] }): Promise<Chat[]> {

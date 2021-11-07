@@ -38,7 +38,7 @@ export default class JoinRoom extends ChatEvent{
             let serialized = serialize(user,{type: User,groups: [AppGroups.USER]});
             socket.to(chat.id!).emit(SocketEvents.JOIN_ROOM,serialized);
             socket.join(chat.id!);
-            service.nextEvent(SocketEvents.MSG_REQUEST,socket,{offset: 0});
+            socket.emit(SocketEvents.JOIN_CONFIRM);
         })
         .catch(e => {
             $log.error(e);

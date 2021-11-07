@@ -10,6 +10,8 @@ export enum SocketEvents{
     CONNECTION_SUCCESS="connectionSuccess",
     ADD_FAV_CHAT="addFavChat",
     RM_FAV_CHAT="rmFavChat",
+    JOIN_CONFIRM="joinConfirm",
+    OTHER_CONNECTION="otherConnection",
     //Estos son eventos que no se generan en tiempo real
     //el servidor los genera, no los responde, por eso no tienen handler
     USER_CHANGED="userChanged",
